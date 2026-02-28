@@ -38,6 +38,7 @@ The Enterprise Resource Planning (ERP) System is a comprehensive web-based platf
 │   ├── vite.config.js
 │   ├── .env
 │   └── package.json
+├── docs/                    # Documentation and reference materials
 ├── package.json             # Root scripts (run both apps)
 └── README.md
 ```
