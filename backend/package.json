@@ -1,0 +1,23 @@
+{
+  "name": "erp-backend",
+  "version": "1.0.0",
+  "description": "ERP System Backend - MERN MVC",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["erp", "mern", "express", "mongodb"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
