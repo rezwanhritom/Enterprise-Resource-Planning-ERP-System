@@ -13,6 +13,8 @@ const PAGE_TITLES = {
   '/payroll': 'Payroll Dashboard',
   '/payroll/generate': 'Generate Payroll',
   '/payroll/me': 'My Payroll',
+  '/inventory': 'Inventory',
+  '/inventory/add': 'Add Inventory Item',
   '/profile': 'Profile',
   '/profile/edit': 'Edit Profile',
 };

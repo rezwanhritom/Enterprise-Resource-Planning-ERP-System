@@ -14,7 +14,7 @@ router.put('/profile', protect, updateProfile);
 router.get(
   '/all',
   protect,
-  authorizeRoles(ROLES.ADMIN, ROLES.HR_MANAGER),
+  authorizeRoles(ROLES.ADMIN, ROLES.HR_MANAGER, ROLES.INVENTORY_MANAGER),
   getAllEmployees
 );
 

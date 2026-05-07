@@ -861,6 +861,78 @@ p {
   font-weight: 700;
 }
 
+.inventory-kpi-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.inventory-filter-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 0.85rem;
+}
+
+.inventory-checkbox-field {
+  justify-content: flex-end;
+}
+
+.inventory-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.inventory-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: #4f46e5;
+}
+
+.status-low-stock {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.status-in-stock {
+  color: #14532d;
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+}
+
+.inventory-supplier {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.inventory-supplier small {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.inventory-inline-edit {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.input-compact {
+  width: 92px;
+  padding: 0.38rem 0.52rem;
+  font-size: 0.84rem;
+}
+
+.inventory-form {
+  max-width: 760px;
+}
+
+.inventory-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
 @media (max-width: 1024px) {
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -871,6 +943,10 @@ p {
   }
 
   .payroll-slip-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-filter-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -916,6 +992,10 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .inventory-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
   .page-header {
     align-items: flex-start;
     flex-direction: column;
@@ -936,6 +1016,10 @@ p {
   }
 
   .payroll-adjustment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-form-grid {
     grid-template-columns: 1fr;
   }
 
@@ -974,6 +1058,11 @@ p {
   }
 
   .actions-col {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .inventory-inline-edit {
     flex-wrap: wrap;
     justify-content: flex-end;
   }

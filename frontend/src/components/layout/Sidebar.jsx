@@ -18,13 +18,20 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const { user } = useAuth();
   const canManagePayroll =
     user?.roles?.includes('Admin') || user?.roles?.includes('HR Manager');
+  const canManageInventory =
+    user?.roles?.includes('Admin') || user?.roles?.includes('Inventory Manager');
   const payrollRoute = canManagePayroll ? '/payroll' : '/payroll/me';
+  const inventoryRoute = canManageInventory ? '/inventory' : '/inventory';
 
   const getLinkClassName = ({ isActive }) =>
     `sidebar-link ${isActive ? 'active' : ''}`.trim();
 
   const primaryNavItems = PRIMARY_NAV_ITEMS.map((item) =>
-    item.label === 'Payroll' ? { ...item, to: payrollRoute } : item
+    item.label === 'Payroll'
+      ? { ...item, to: payrollRoute }
+      : item.label === 'Inventory'
+        ? { ...item, to: inventoryRoute, disabled: false }
+        : item
   );
 
   return (

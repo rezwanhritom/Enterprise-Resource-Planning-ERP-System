@@ -1,5 +1,6 @@
 import Attendance, { ATTENDANCE_STATUS } from '../models/Attendance.js';
 import Department from '../models/Department.js';
+import Inventory from '../models/Inventory.js';
 import Payroll from '../models/Payroll.js';
 import User from '../models/User.js';
 import asyncHandler from '../utils/asyncHandler.js';
@@ -37,7 +38,14 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
   const sevenDaysAgo = new Date(today);
   sevenDaysAgo.setDate(today.getDate() - 6);
 
-  const [totalEmployees, presentToday, totalDepartments, attendanceRows, salaryExpenseRows] =
+  const [
+    totalEmployees,
+    presentToday,
+    totalDepartments,
+    lowStockItems,
+    attendanceRows,
+    salaryExpenseRows,
+  ] =
     await Promise.all([
       User.countDocuments(),
       Attendance.countDocuments({
@@ -45,6 +53,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
         status: ATTENDANCE_STATUS.PRESENT,
       }),
       Department.countDocuments(),
+      Inventory.countDocuments({ isLowStock: true }),
       Attendance.aggregate([
         {
           $match: {
@@ -77,7 +86,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
       totalEmployees,
       presentToday,
       totalDepartments,
-      lowStockItems: 0,
+      lowStockItems,
     },
     salarySummary: {
       totalSalaryExpense,
