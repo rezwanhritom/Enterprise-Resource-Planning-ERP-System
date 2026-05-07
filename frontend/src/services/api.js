@@ -1,13 +1,29 @@
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+import axios from 'axios';
 
-export async function fetchApi(endpoint, options = {}) {
-  const url = `${API_BASE}${endpoint}`;
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
-  if (!res.ok) throw new Error(await res.text().catch(() => res.statusText));
-  return res.json();
-}
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-export const healthCheck = () => fetchApi('/health');
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Reserved for centralized token refresh / logout behavior.
+    return Promise.reject(error);
+  }
+);
+
+export default api;
