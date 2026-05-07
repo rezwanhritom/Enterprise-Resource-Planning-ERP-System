@@ -18,6 +18,8 @@ import AddItemPage from './pages/inventory/AddItemPage.jsx';
 import ProcurementPage from './pages/procurement/ProcurementPage.jsx';
 import CreateRequestPage from './pages/procurement/CreateRequestPage.jsx';
 import SuppliersPage from './pages/suppliers/SuppliersPage.jsx';
+import FinanceDashboardPage from './pages/finance/FinanceDashboardPage.jsx';
+import AddFinanceEntryPage from './pages/finance/AddFinanceEntryPage.jsx';
 
 function App() {
   return (
@@ -150,6 +152,26 @@ function App() {
             <ProtectedRoute>
               <SuppliersPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/finance"
+          element={
+            <RoleProtectedRoute
+              allowedRoles={['Admin', 'Accountant', 'Finance Manager']}
+            >
+              <FinanceDashboardPage />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/finance/add"
+          element={
+            <RoleProtectedRoute
+              allowedRoles={['Admin', 'Accountant', 'Finance Manager']}
+            >
+              <AddFinanceEntryPage />
+            </RoleProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/login" replace />} />

@@ -23,8 +23,13 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
     user?.roles?.includes('Admin') || user?.roles?.includes('HR Manager');
   const canManageInventory =
     user?.roles?.includes('Admin') || user?.roles?.includes('Inventory Manager');
+  const canAccessFinance =
+    user?.roles?.includes('Admin') ||
+    user?.roles?.includes('Accountant') ||
+    user?.roles?.includes('Finance Manager');
   const payrollRoute = canManagePayroll ? '/payroll' : '/payroll/me';
   const inventoryRoute = canManageInventory ? '/inventory' : '/inventory';
+  const financeRoute = canAccessFinance ? '/finance' : '/finance';
 
   const getLinkClassName = ({ isActive }) =>
     `sidebar-link ${isActive ? 'active' : ''}`.trim();
@@ -34,6 +39,8 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
       ? { ...item, to: payrollRoute }
       : item.label === 'Inventory'
         ? { ...item, to: inventoryRoute, disabled: false }
+        : item.label === 'Finance'
+          ? { ...item, to: financeRoute, disabled: !canAccessFinance }
         : item
   );
 

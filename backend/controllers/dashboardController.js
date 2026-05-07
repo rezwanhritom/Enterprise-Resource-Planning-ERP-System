@@ -1,5 +1,6 @@
 import Attendance, { ATTENDANCE_STATUS } from '../models/Attendance.js';
 import Department from '../models/Department.js';
+import Finance, { FINANCE_TYPE } from '../models/Finance.js';
 import Inventory from '../models/Inventory.js';
 import Payroll from '../models/Payroll.js';
 import User from '../models/User.js';
@@ -45,6 +46,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
     lowStockItems,
     attendanceRows,
     salaryExpenseRows,
+    financeRows,
   ] =
     await Promise.all([
       User.countDocuments(),
@@ -77,9 +79,21 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
           },
         },
       ]),
+      Finance.aggregate([
+        {
+          $group: {
+            _id: '$type',
+            total: { $sum: '$amount' },
+          },
+        },
+      ]),
     ]);
 
   const totalSalaryExpense = salaryExpenseRows[0]?.totalSalaryExpense ?? 0;
+  const totalRevenue =
+    financeRows.find((row) => row._id === FINANCE_TYPE.REVENUE)?.total ?? 0;
+  const totalExpenses =
+    financeRows.find((row) => row._id === FINANCE_TYPE.EXPENSE)?.total ?? 0;
 
   const data = {
     counts: {
@@ -90,6 +104,11 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
     },
     salarySummary: {
       totalSalaryExpense,
+    },
+    financialSummary: {
+      totalRevenue,
+      totalExpenses,
+      netBalance: totalRevenue - totalExpenses,
     },
     charts: {
       attendanceChart: buildAttendanceChart(attendanceRows, sevenDaysAgo),
