@@ -10,6 +10,9 @@ import EditProfilePage from './pages/employees/EditProfilePage.jsx';
 import EmployeesPage from './pages/employees/EmployeesPage.jsx';
 import AttendancePage from './pages/attendance/AttendancePage.jsx';
 import AttendanceManagementPage from './pages/attendance/AttendanceManagementPage.jsx';
+import PayrollDashboardPage from './pages/payroll/PayrollDashboardPage.jsx';
+import GeneratePayrollPage from './pages/payroll/GeneratePayrollPage.jsx';
+import MyPayrollPage from './pages/payroll/MyPayrollPage.jsx';
 
 function App() {
   return (
@@ -78,6 +81,30 @@ function App() {
             <RoleProtectedRoute allowedRoles={['Admin', 'HR Manager']}>
               <AttendanceManagementPage />
             </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/payroll"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin', 'HR Manager']}>
+              <PayrollDashboardPage />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/payroll/generate"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin', 'HR Manager']}>
+              <GeneratePayrollPage />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/payroll/me"
+          element={
+            <ProtectedRoute>
+              <MyPayrollPage />
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/login" replace />} />

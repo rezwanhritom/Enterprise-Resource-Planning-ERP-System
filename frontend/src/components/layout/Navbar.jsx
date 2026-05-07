@@ -10,6 +10,9 @@ const PAGE_TITLES = {
   '/departments/create': 'Create Department',
   '/attendance': 'Attendance',
   '/attendance/manage': 'Manage Attendance',
+  '/payroll': 'Payroll Dashboard',
+  '/payroll/generate': 'Generate Payroll',
+  '/payroll/me': 'My Payroll',
   '/profile': 'Profile',
   '/profile/edit': 'Edit Profile',
 };

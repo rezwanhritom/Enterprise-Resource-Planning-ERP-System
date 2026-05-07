@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 const PRIMARY_NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/employees', label: 'Employees' },
   { to: '/departments', label: 'Departments' },
   { to: '/attendance', label: 'Attendance' },
-  { to: '/payroll', label: 'Payroll', disabled: true },
+  { to: '/payroll', label: 'Payroll' },
   { to: '/inventory', label: 'Inventory', disabled: true },
   { to: '/procurement', label: 'Procurement', disabled: true },
   { to: '/finance', label: 'Finance', disabled: true },
@@ -14,8 +15,17 @@ const PRIMARY_NAV_ITEMS = [
 const SECONDARY_NAV_ITEMS = [{ to: '/profile', label: 'Profile' }];
 
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
+  const { user } = useAuth();
+  const canManagePayroll =
+    user?.roles?.includes('Admin') || user?.roles?.includes('HR Manager');
+  const payrollRoute = canManagePayroll ? '/payroll' : '/payroll/me';
+
   const getLinkClassName = ({ isActive }) =>
     `sidebar-link ${isActive ? 'active' : ''}`.trim();
+
+  const primaryNavItems = PRIMARY_NAV_ITEMS.map((item) =>
+    item.label === 'Payroll' ? { ...item, to: payrollRoute } : item
+  );
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`.trim()}>
@@ -35,7 +45,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
       </div>
 
       <nav className="sidebar-nav" aria-label="Primary">
-        {PRIMARY_NAV_ITEMS.map((item) =>
+        {primaryNavItems.map((item) =>
           item.disabled ? (
             <span key={item.to} className="sidebar-link sidebar-link-disabled">
               {item.label}

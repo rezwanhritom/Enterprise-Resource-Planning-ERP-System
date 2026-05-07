@@ -812,6 +812,55 @@ p {
   line-height: 1.45;
 }
 
+.payroll-kpi-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.payroll-employee-cell {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.payroll-employee-cell small {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.payroll-form {
+  max-width: 760px;
+}
+
+.payroll-adjustment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.payroll-slip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.95rem;
+}
+
+.payroll-slip-card {
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.payroll-breakdown-list .payroll-final-row {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 0.2rem;
+  padding-top: 0.85rem;
+}
+
+.payroll-breakdown-list .payroll-final-row dt {
+  color: #111827;
+}
+
+.payroll-breakdown-list .payroll-final-row dd {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
 @media (max-width: 1024px) {
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -819,6 +868,10 @@ p {
 
   .navbar-user-name {
     display: none;
+  }
+
+  .payroll-slip-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -859,6 +912,10 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .payroll-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
   .page-header {
     align-items: flex-start;
     flex-direction: column;
@@ -875,6 +932,10 @@ p {
   }
 
   .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payroll-adjustment-grid {
     grid-template-columns: 1fr;
   }
 

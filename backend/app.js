@@ -7,6 +7,7 @@ import departmentRoutes from './routes/departmentRoutes.js';
 import employeeRoutes from './routes/employeeRoutes.js';
 import attendanceRoutes from './routes/attendanceRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import payrollRoutes from './routes/payrollRoutes.js';
 import globalErrorHandler from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use('/api/departments', departmentRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/payroll', payrollRoutes);
 app.use('/api', routes);
 
 app.use((req, res) => {

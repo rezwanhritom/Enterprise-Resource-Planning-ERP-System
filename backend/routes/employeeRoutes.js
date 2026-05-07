@@ -11,6 +11,11 @@ const router = Router();
 
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
-router.get('/all', protect, authorizeRoles(ROLES.ADMIN), getAllEmployees);
+router.get(
+  '/all',
+  protect,
+  authorizeRoles(ROLES.ADMIN, ROLES.HR_MANAGER),
+  getAllEmployees
+);
 
 export default router;
