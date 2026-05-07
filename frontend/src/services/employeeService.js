@@ -10,7 +10,21 @@ export const updateProfile = async (payload) => {
   return response.data?.data;
 };
 
-export const getAllEmployees = async () => {
-  const response = await api.get('/employees/all');
+export const getAllEmployees = async (filters = {}) => {
+  const params = {};
+
+  if (filters.search?.trim()) {
+    params.search = filters.search.trim();
+  }
+
+  if (filters.department?.trim()) {
+    params.department = filters.department.trim();
+  }
+
+  if (filters.role?.trim()) {
+    params.role = filters.role.trim();
+  }
+
+  const response = await api.get('/employees/all', { params });
   return response.data?.data ?? [];
 };

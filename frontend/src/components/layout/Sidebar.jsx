@@ -17,6 +17,9 @@ export default function Sidebar() {
         <NavLink to="/attendance" className={getLinkClassName}>
           Attendance
         </NavLink>
+        <NavLink to="/employees" className={getLinkClassName}>
+          Employees
+        </NavLink>
         <NavLink to="/departments" className={getLinkClassName}>
           Departments
         </NavLink>

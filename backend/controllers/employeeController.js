@@ -1,6 +1,8 @@
 import User from '../models/User.js';
+import mongoose from 'mongoose';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiError from '../utils/ApiError.js';
+import { ALLOWED_ROLES } from '../utils/roles.js';
 
 const FORBIDDEN_PROFILE_FIELDS = [
   'roles',
@@ -88,7 +90,30 @@ export const updateProfile = asyncHandler(async (req, res) => {
 });
 
 export const getAllEmployees = asyncHandler(async (req, res) => {
-  const employees = await User.find({})
+  const { search, department, role } = req.query || {};
+  const query = {};
+
+  if (typeof search === 'string' && search.trim()) {
+    query.name = { $regex: search.trim(), $options: 'i' };
+  }
+
+  if (
+    typeof department === 'string' &&
+    department.trim() &&
+    mongoose.Types.ObjectId.isValid(department.trim())
+  ) {
+    query.departments = department.trim();
+  }
+
+  if (
+    typeof role === 'string' &&
+    role.trim() &&
+    ALLOWED_ROLES.includes(role.trim())
+  ) {
+    query.roles = role.trim();
+  }
+
+  const employees = await User.find(query)
     .select('-password')
     .populate('departments', 'name description')
     .sort({ createdAt: -1 });

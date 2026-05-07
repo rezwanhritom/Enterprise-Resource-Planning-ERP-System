@@ -7,6 +7,7 @@ import DepartmentsPage from './pages/departments/DepartmentsPage.jsx';
 import CreateDepartmentPage from './pages/departments/CreateDepartmentPage.jsx';
 import ProfilePage from './pages/employees/ProfilePage.jsx';
 import EditProfilePage from './pages/employees/EditProfilePage.jsx';
+import EmployeesPage from './pages/employees/EmployeesPage.jsx';
 import AttendancePage from './pages/attendance/AttendancePage.jsx';
 import AttendanceManagementPage from './pages/attendance/AttendanceManagementPage.jsx';
 
@@ -53,6 +54,14 @@ function App() {
             <ProtectedRoute>
               <EditProfilePage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employees"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin', 'HR Manager']}>
+              <EmployeesPage />
+            </RoleProtectedRoute>
           }
         />
         <Route
