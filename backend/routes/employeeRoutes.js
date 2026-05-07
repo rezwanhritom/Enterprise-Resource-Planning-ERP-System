@@ -4,8 +4,7 @@ import {
   getProfile,
   updateProfile,
 } from '../controllers/employeeController.js';
-import { authorizeRoles, protect } from '../middleware/authMiddleware.js';
-import { ROLES } from '../utils/roles.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
@@ -14,14 +13,6 @@ router.put('/profile', protect, updateProfile);
 router.get(
   '/all',
   protect,
-  authorizeRoles(
-    ROLES.ADMIN,
-    ROLES.HR_MANAGER,
-    ROLES.INVENTORY_MANAGER,
-    ROLES.SUPERVISOR,
-    ROLES.PROCUREMENT_MANAGER,
-    ROLES.FINANCE_MANAGER
-  ),
   getAllEmployees
 );
 

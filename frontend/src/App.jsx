@@ -21,6 +21,7 @@ import SuppliersPage from './pages/suppliers/SuppliersPage.jsx';
 import FinanceDashboardPage from './pages/finance/FinanceDashboardPage.jsx';
 import AddFinanceEntryPage from './pages/finance/AddFinanceEntryPage.jsx';
 import PerformancePage from './pages/performance/PerformancePage.jsx';
+import MessagesPage from './pages/messages/MessagesPage.jsx';
 
 function App() {
   return (
@@ -160,6 +161,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PerformancePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <ProtectedRoute>
+              <MessagesPage />
             </ProtectedRoute>
           }
         />

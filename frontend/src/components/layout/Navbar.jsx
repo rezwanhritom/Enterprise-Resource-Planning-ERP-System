@@ -19,6 +19,7 @@ const PAGE_TITLES = {
   '/procurement/create': 'Create Procurement Request',
   '/performance': 'Performance Notes',
   '/suppliers': 'Suppliers',
+  '/messages': 'Messages',
   '/finance': 'Finance Dashboard',
   '/finance/add': 'Add Finance Entry',
   '/profile': 'Profile',
