@@ -125,6 +125,11 @@ p {
   color: #b91c1c;
 }
 
+.form-success {
+  font-size: 0.86rem;
+  color: #166534;
+}
+
 .input {
   width: 100%;
   border: 1px solid #d1d5db;
@@ -307,6 +312,12 @@ p {
   letter-spacing: -0.01em;
 }
 
+.page-actions {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+}
+
 .page-subtitle {
   margin-top: 0.35rem;
 }
@@ -410,6 +421,68 @@ p {
   gap: 0.65rem;
 }
 
+.attendance-status-card {
+  margin-bottom: 1rem;
+}
+
+.status-label {
+  font-size: 0.78rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.status-row {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.status-heading {
+  font-size: 1.1rem;
+  font-weight: 650;
+  color: #111827;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.24rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+}
+
+.status-present {
+  color: #14532d;
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+}
+
+.status-absent {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.status-leave {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.status-pending {
+  color: #374151;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -481,6 +554,16 @@ p {
   .page-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .page-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-actions .btn {
+    width: 100%;
   }
 
   .data-table {

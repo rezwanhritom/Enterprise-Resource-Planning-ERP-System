@@ -1,11 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
+import RoleProtectedRoute from './components/auth/RoleProtectedRoute.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import DashboardPage from './pages/dashboard/DashboardPage.jsx';
 import DepartmentsPage from './pages/departments/DepartmentsPage.jsx';
 import CreateDepartmentPage from './pages/departments/CreateDepartmentPage.jsx';
 import ProfilePage from './pages/employees/ProfilePage.jsx';
 import EditProfilePage from './pages/employees/EditProfilePage.jsx';
+import AttendancePage from './pages/attendance/AttendancePage.jsx';
+import AttendanceManagementPage from './pages/attendance/AttendanceManagementPage.jsx';
 
 function App() {
   return (
@@ -50,6 +53,22 @@ function App() {
             <ProtectedRoute>
               <EditProfilePage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/attendance"
+          element={
+            <ProtectedRoute>
+              <AttendancePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/attendance/manage"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin', 'HR Manager']}>
+              <AttendanceManagementPage />
+            </RoleProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/login" replace />} />
