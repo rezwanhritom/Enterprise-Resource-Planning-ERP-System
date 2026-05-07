@@ -15,6 +15,9 @@ import GeneratePayrollPage from './pages/payroll/GeneratePayrollPage.jsx';
 import MyPayrollPage from './pages/payroll/MyPayrollPage.jsx';
 import InventoryPage from './pages/inventory/InventoryPage.jsx';
 import AddItemPage from './pages/inventory/AddItemPage.jsx';
+import ProcurementPage from './pages/procurement/ProcurementPage.jsx';
+import CreateRequestPage from './pages/procurement/CreateRequestPage.jsx';
+import SuppliersPage from './pages/suppliers/SuppliersPage.jsx';
 
 function App() {
   return (
@@ -123,6 +126,30 @@ function App() {
             <RoleProtectedRoute allowedRoles={['Admin', 'Inventory Manager']}>
               <AddItemPage />
             </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/procurement"
+          element={
+            <ProtectedRoute>
+              <ProcurementPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/procurement/create"
+          element={
+            <ProtectedRoute>
+              <CreateRequestPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/suppliers"
+          element={
+            <ProtectedRoute>
+              <SuppliersPage />
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/login" replace />} />

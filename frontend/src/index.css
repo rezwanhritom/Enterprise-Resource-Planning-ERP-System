@@ -933,6 +933,83 @@ p {
   gap: 0.85rem;
 }
 
+.procurement-filter-grid {
+  display: grid;
+  grid-template-columns: 320px;
+  gap: 0.85rem;
+}
+
+.procurement-items-list {
+  list-style: none;
+  display: grid;
+  gap: 0.22rem;
+  padding: 0;
+}
+
+.procurement-items-list li {
+  font-size: 0.88rem;
+  color: #374151;
+}
+
+.procurement-reject-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.procurement-reason-input {
+  width: 180px;
+}
+
+.procurement-form {
+  max-width: 820px;
+}
+
+.procurement-items-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.45rem;
+}
+
+.procurement-item-row {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.procurement-item-remove {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.supplier-inline-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.supplier-inline-form-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.status-approved {
+  color: #14532d;
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+}
+
+.status-rejected {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
 @media (max-width: 1024px) {
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -948,6 +1025,14 @@ p {
 
   .inventory-filter-grid {
     grid-template-columns: 1fr;
+  }
+
+  .procurement-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .supplier-inline-form {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -1023,6 +1108,10 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .supplier-inline-form {
+    grid-template-columns: 1fr;
+  }
+
   .data-table {
     min-width: 0;
   }
@@ -1065,6 +1154,12 @@ p {
   .inventory-inline-edit {
     flex-wrap: wrap;
     justify-content: flex-end;
+  }
+
+  .procurement-items-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.65rem;
   }
 
   .form-actions {

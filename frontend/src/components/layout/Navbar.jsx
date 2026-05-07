@@ -15,6 +15,9 @@ const PAGE_TITLES = {
   '/payroll/me': 'My Payroll',
   '/inventory': 'Inventory',
   '/inventory/add': 'Add Inventory Item',
+  '/procurement': 'Procurement Workflow',
+  '/procurement/create': 'Create Procurement Request',
+  '/suppliers': 'Suppliers',
   '/profile': 'Profile',
   '/profile/edit': 'Edit Profile',
 };

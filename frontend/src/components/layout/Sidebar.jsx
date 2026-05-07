@@ -8,11 +8,14 @@ const PRIMARY_NAV_ITEMS = [
   { to: '/attendance', label: 'Attendance' },
   { to: '/payroll', label: 'Payroll' },
   { to: '/inventory', label: 'Inventory', disabled: true },
-  { to: '/procurement', label: 'Procurement', disabled: true },
+  { to: '/procurement', label: 'Procurement' },
   { to: '/finance', label: 'Finance', disabled: true },
 ];
 
-const SECONDARY_NAV_ITEMS = [{ to: '/profile', label: 'Profile' }];
+const SECONDARY_NAV_ITEMS = [
+  { to: '/suppliers', label: 'Suppliers' },
+  { to: '/profile', label: 'Profile' },
+];
 
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const { user } = useAuth();
