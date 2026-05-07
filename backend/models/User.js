@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
+      select: false,
       validate: {
         validator: (value) => PASSWORD_REGEX.test(value),
         message:

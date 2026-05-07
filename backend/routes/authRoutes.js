@@ -1,7 +1,16 @@
 import { Router } from 'express';
+import {
+  getCurrentUser,
+  loginUser,
+  registerUser,
+} from '../controllers/authController.js';
+import { authorizeRoles, protect } from '../middleware/authMiddleware.js';
+import { ROLES } from '../utils/roles.js';
 
 const router = Router();
 
-// Auth routes will be mounted here in a later step.
+router.post('/login', loginUser);
+router.post('/register', protect, authorizeRoles(ROLES.ADMIN), registerUser);
+router.get('/me', protect, getCurrentUser);
 
 export default router;
