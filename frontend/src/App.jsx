@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import DashboardPage from './pages/dashboard/DashboardPage.jsx';
+import DepartmentsPage from './pages/departments/DepartmentsPage.jsx';
+import CreateDepartmentPage from './pages/departments/CreateDepartmentPage.jsx';
 
 function App() {
   return (
@@ -13,6 +15,22 @@ function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/departments"
+          element={
+            <ProtectedRoute>
+              <DepartmentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/departments/create"
+          element={
+            <ProtectedRoute>
+              <CreateDepartmentPage />
             </ProtectedRoute>
           }
         />

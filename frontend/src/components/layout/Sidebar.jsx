@@ -1,17 +1,19 @@
+import { NavLink } from 'react-router-dom';
+
 export default function Sidebar() {
+  const getLinkClassName = ({ isActive }) =>
+    `sidebar-link ${isActive ? 'active' : ''}`.trim();
+
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">ERP Suite</div>
       <nav className="sidebar-nav">
-        <button type="button" className="sidebar-link active">
+        <NavLink to="/dashboard" className={getLinkClassName}>
           Dashboard
-        </button>
-        <button type="button" className="sidebar-link" disabled>
-          Modules (soon)
-        </button>
-        <button type="button" className="sidebar-link" disabled>
-          Reports (soon)
-        </button>
+        </NavLink>
+        <NavLink to="/departments" className={getLinkClassName}>
+          Departments
+        </NavLink>
       </nav>
     </aside>
   );
