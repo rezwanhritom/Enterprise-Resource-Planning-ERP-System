@@ -1,2 +1,2 @@
-// Placeholder - import and re-export models as you add them
-// Example: export { User } from './User.js';
+export { default as Department } from './Department.js';
+export { default as User } from './User.js';
