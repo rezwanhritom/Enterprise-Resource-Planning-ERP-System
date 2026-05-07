@@ -4,6 +4,8 @@ import LoginPage from './pages/auth/LoginPage.jsx';
 import DashboardPage from './pages/dashboard/DashboardPage.jsx';
 import DepartmentsPage from './pages/departments/DepartmentsPage.jsx';
 import CreateDepartmentPage from './pages/departments/CreateDepartmentPage.jsx';
+import ProfilePage from './pages/employees/ProfilePage.jsx';
+import EditProfilePage from './pages/employees/EditProfilePage.jsx';
 
 function App() {
   return (
@@ -31,6 +33,22 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateDepartmentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/edit"
+          element={
+            <ProtectedRoute>
+              <EditProfilePage />
             </ProtectedRoute>
           }
         />

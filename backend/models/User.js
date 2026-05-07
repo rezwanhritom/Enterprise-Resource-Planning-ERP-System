@@ -44,6 +44,24 @@ const userSchema = new mongoose.Schema(
         ref: 'Department',
       },
     ],
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    address: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    designation: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    joiningDate: {
+      type: Date,
+    },
     isActive: {
       type: Boolean,
       default: true,
