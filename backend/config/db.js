@@ -14,7 +14,10 @@ const MONGO_URI =
  */
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(MONGO_URI);
+    const conn = await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 15000,
+      dbName: process.env.MONGO_DB || 'erp',
+    });
     console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
     console.error('MongoDB connection failed:', error.message);
