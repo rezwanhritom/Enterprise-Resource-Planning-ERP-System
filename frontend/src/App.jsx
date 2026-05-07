@@ -20,6 +20,7 @@ import CreateRequestPage from './pages/procurement/CreateRequestPage.jsx';
 import SuppliersPage from './pages/suppliers/SuppliersPage.jsx';
 import FinanceDashboardPage from './pages/finance/FinanceDashboardPage.jsx';
 import AddFinanceEntryPage from './pages/finance/AddFinanceEntryPage.jsx';
+import PerformancePage from './pages/performance/PerformancePage.jsx';
 
 function App() {
   return (
@@ -151,6 +152,14 @@ function App() {
           element={
             <ProtectedRoute>
               <SuppliersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/performance"
+          element={
+            <ProtectedRoute>
+              <PerformancePage />
             </ProtectedRoute>
           }
         />

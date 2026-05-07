@@ -1036,6 +1036,101 @@ p {
   gap: 0.85rem;
 }
 
+.performance-form-card {
+  margin-bottom: 1rem;
+}
+
+.performance-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.performance-form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.85rem;
+}
+
+.performance-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.performance-history-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.performance-note-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.95rem 1rem;
+  background: #ffffff;
+}
+
+.performance-note-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.performance-note-meta {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.performance-note-title {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.performance-note-subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.performance-note-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.performance-rating-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 0.22rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.performance-date-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  border-radius: 999px;
+  padding: 0.22rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.performance-note-body {
+  margin: 0.72rem 0 0;
+  color: #334155;
+  line-height: 1.58;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 1024px) {
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1062,6 +1157,14 @@ p {
   }
 
   .finance-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-filter-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1140,6 +1243,11 @@ p {
 
   .inventory-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .performance-note-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .supplier-inline-form {

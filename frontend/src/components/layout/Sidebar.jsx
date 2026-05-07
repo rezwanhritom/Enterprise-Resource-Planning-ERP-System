@@ -9,6 +9,7 @@ const PRIMARY_NAV_ITEMS = [
   { to: '/payroll', label: 'Payroll' },
   { to: '/inventory', label: 'Inventory', disabled: true },
   { to: '/procurement', label: 'Procurement' },
+  { to: '/performance', label: 'Performance' },
   { to: '/finance', label: 'Finance', disabled: true },
 ];
 

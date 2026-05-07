@@ -17,6 +17,7 @@ const PAGE_TITLES = {
   '/inventory/add': 'Add Inventory Item',
   '/procurement': 'Procurement Workflow',
   '/procurement/create': 'Create Procurement Request',
+  '/performance': 'Performance Notes',
   '/suppliers': 'Suppliers',
   '/finance': 'Finance Dashboard',
   '/finance/add': 'Add Finance Entry',
