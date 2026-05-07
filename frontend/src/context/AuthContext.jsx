@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-
-const AUTH_STORAGE_KEY = 'erp_auth';
-const TOKEN_STORAGE_KEY = 'token';
+import { storageKeys } from '../utils/storage.js';
 
 const AuthContext = createContext(null);
 
@@ -10,15 +8,19 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!storedAuth) return;
-
+    const storedAuth = localStorage.getItem(storageKeys.auth);
+    const storedToken = localStorage.getItem(storageKeys.token);
     try {
+      if (!storedAuth) {
+        setToken(storedToken ?? null);
+        return;
+      }
       const parsed = JSON.parse(storedAuth);
       setUser(parsed.user ?? null);
-      setToken(parsed.token ?? null);
+      setToken(parsed.token ?? storedToken ?? null);
     } catch {
-      localStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem(storageKeys.auth);
+      localStorage.removeItem(storageKeys.token);
     }
   }, []);
 
@@ -28,21 +30,21 @@ export function AuthProvider({ children }) {
     setUser(nextUser);
     setToken(nextToken);
     localStorage.setItem(
-      AUTH_STORAGE_KEY,
+      storageKeys.auth,
       JSON.stringify({ user: nextUser, token: nextToken })
     );
     if (nextToken) {
-      localStorage.setItem(TOKEN_STORAGE_KEY, nextToken);
+      localStorage.setItem(storageKeys.token, nextToken);
     } else {
-      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      localStorage.removeItem(storageKeys.token);
     }
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(storageKeys.auth);
+    localStorage.removeItem(storageKeys.token);
   };
 
   const value = useMemo(
