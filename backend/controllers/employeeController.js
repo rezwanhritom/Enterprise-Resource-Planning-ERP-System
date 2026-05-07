@@ -27,6 +27,7 @@ export const getProfile = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Profile fetched successfully',
     data: profile,
   });
 });
@@ -120,6 +121,7 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Employees fetched successfully',
     data: employees,
   });
 });

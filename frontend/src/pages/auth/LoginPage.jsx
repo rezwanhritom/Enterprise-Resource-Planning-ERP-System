@@ -56,7 +56,6 @@ export default function LoginPage() {
     } catch (requestError) {
       const message =
         requestError?.response?.data?.message ||
-        requestError?.response?.data?.error ||
         (requestError?.response?.status === 401
           ? 'Invalid email or password.'
           : 'Unable to sign in. Please try again.');

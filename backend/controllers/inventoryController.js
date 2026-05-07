@@ -146,6 +146,7 @@ export const getItems = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Inventory items fetched successfully',
     data: items,
   });
 });
@@ -166,6 +167,7 @@ export const getInventorySummary = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Inventory summary fetched successfully',
     data: {
       totalItems,
       lowStockCount,

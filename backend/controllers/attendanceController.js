@@ -90,6 +90,7 @@ export const getAttendanceByUser = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Attendance records fetched successfully',
     data: attendance,
   });
 });
@@ -101,6 +102,7 @@ export const getAllAttendance = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Attendance records fetched successfully',
     data: records,
   });
 });

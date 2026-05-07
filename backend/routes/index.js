@@ -7,7 +7,13 @@ const router = Router();
 // router.use('/users', userRoutes);
 
 router.get('/', (req, res) => {
-  res.json({ message: 'ERP API - use /api/health for health check' });
+  return res.status(200).json({
+    success: true,
+    message: 'ERP API root endpoint',
+    data: {
+      info: 'Use /api/health for health check',
+    },
+  });
 });
 
 export default router;

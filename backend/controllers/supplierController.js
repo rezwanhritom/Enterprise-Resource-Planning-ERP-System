@@ -39,6 +39,7 @@ export const getSuppliers = asyncHandler(async (req, res) => {
   const suppliers = await Supplier.find({}).sort({ name: 1 });
   return res.status(200).json({
     success: true,
+    message: 'Suppliers fetched successfully',
     data: suppliers,
   });
 });

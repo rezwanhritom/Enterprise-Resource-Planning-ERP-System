@@ -19,12 +19,13 @@ const SECONDARY_NAV_ITEMS = [
 
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const { user } = useAuth();
+  const isAdmin = user?.roles?.includes('Admin');
   const canManagePayroll =
-    user?.roles?.includes('Admin') || user?.roles?.includes('HR Manager');
+    isAdmin || user?.roles?.includes('HR Manager');
   const canManageInventory =
-    user?.roles?.includes('Admin') || user?.roles?.includes('Inventory Manager');
+    isAdmin || user?.roles?.includes('Inventory Manager');
   const canAccessFinance =
-    user?.roles?.includes('Admin') ||
+    isAdmin ||
     user?.roles?.includes('Accountant') ||
     user?.roles?.includes('Finance Manager');
   const payrollRoute = canManagePayroll ? '/payroll' : '/payroll/me';
@@ -34,15 +35,23 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const getLinkClassName = ({ isActive }) =>
     `sidebar-link ${isActive ? 'active' : ''}`.trim();
 
-  const primaryNavItems = PRIMARY_NAV_ITEMS.map((item) =>
-    item.label === 'Payroll'
-      ? { ...item, to: payrollRoute }
-      : item.label === 'Inventory'
-        ? { ...item, to: inventoryRoute, disabled: false }
-        : item.label === 'Finance'
-          ? { ...item, to: financeRoute, disabled: !canAccessFinance }
-        : item
-  );
+  const primaryNavItems = PRIMARY_NAV_ITEMS.map((item) => {
+    if (item.label === 'Payroll') return { ...item, to: payrollRoute };
+    if (item.label === 'Departments') return { ...item, disabled: !isAdmin };
+    if (item.label === 'Employees') {
+      return {
+        ...item,
+        disabled: !(isAdmin || user?.roles?.includes('HR Manager')),
+      };
+    }
+    if (item.label === 'Inventory') {
+      return { ...item, to: inventoryRoute, disabled: false };
+    }
+    if (item.label === 'Finance') {
+      return { ...item, to: financeRoute, disabled: !canAccessFinance };
+    }
+    return item;
+  });
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`.trim()}>

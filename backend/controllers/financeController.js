@@ -109,6 +109,7 @@ export const getTransactions = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Finance transactions fetched successfully',
     data: transactions,
   });
 });
@@ -136,6 +137,7 @@ export const getReports = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Finance report fetched successfully',
     data: {
       totalExpenses,
       totalRevenue,

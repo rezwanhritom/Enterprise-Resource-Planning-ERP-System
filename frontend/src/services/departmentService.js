@@ -7,15 +7,15 @@ export const getDepartments = async () => {
 
 export const createDepartment = async (payload) => {
   const response = await api.post('/departments', payload);
-  return response.data;
+  return response.data?.data;
 };
 
 export const updateDepartment = async (id, payload) => {
   const response = await api.put(`/departments/${id}`, payload);
-  return response.data;
+  return response.data?.data;
 };
 
 export const deleteDepartment = async (id) => {
   const response = await api.delete(`/departments/${id}`);
-  return response.data;
+  return response.data?.data;
 };

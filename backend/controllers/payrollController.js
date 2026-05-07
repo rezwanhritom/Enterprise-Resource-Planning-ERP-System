@@ -134,6 +134,7 @@ export const getPayrollByUser = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Payroll records fetched successfully',
     data: payrolls,
   });
 });
@@ -151,6 +152,7 @@ export const getAllPayrolls = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: true,
+    message: 'Payroll records fetched successfully',
     data: payrolls,
   });
 });

@@ -37,17 +37,17 @@ function App() {
         <Route
           path="/departments"
           element={
-            <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['Admin']}>
               <DepartmentsPage />
-            </ProtectedRoute>
+            </RoleProtectedRoute>
           }
         />
         <Route
           path="/departments/create"
           element={
-            <ProtectedRoute>
+            <RoleProtectedRoute allowedRoles={['Admin']}>
               <CreateDepartmentPage />
-            </ProtectedRoute>
+            </RoleProtectedRoute>
           }
         />
         <Route
