@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Card from '../../components/ui/Card.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getAllEmployees } from '../../services/employeeService.js';
+import { getEmployeeDirectory } from '../../services/employeeService.js';
 import { addNote, getEmployeeNotes } from '../../services/performanceService.js';
 
 const MANAGER_ROLES = [
@@ -52,7 +52,7 @@ export default function PerformancePage() {
 
     const loadEmployees = async () => {
       try {
-        const data = await getAllEmployees();
+        const data = await getEmployeeDirectory();
         setEmployees(data);
       } catch {
         setEmployees([]);

@@ -4,6 +4,7 @@ import Payroll from '../models/Payroll.js';
 import User from '../models/User.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import createAuditLog from '../utils/createAuditLog.js';
 
 const MONTH_REGEX = /^\d{4}-(0[1-9]|1[0-2])$/;
 
@@ -110,6 +111,12 @@ export const generatePayroll = asyncHandler(async (req, res) => {
   const populatedPayroll = await Payroll.findById(payroll._id)
     .populate('userId', 'name email')
     .populate('generatedBy', 'name email');
+
+  await createAuditLog({
+    userId: req.user?._id,
+    module: 'Payroll',
+    action: 'Payroll generated',
+  });
 
   return res.status(201).json({
     success: true,

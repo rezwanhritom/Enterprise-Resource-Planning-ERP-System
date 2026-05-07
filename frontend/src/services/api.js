@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { storageKeys } from '../utils/storage.js';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -21,7 +22,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Reserved for centralized token refresh / logout behavior.
+    if (error?.response?.status === 401) {
+      localStorage.removeItem(storageKeys.auth);
+      localStorage.removeItem(storageKeys.token);
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
     return Promise.reject(error);
   }
 );

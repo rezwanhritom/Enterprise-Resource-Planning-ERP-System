@@ -20,6 +20,7 @@ const PAGE_TITLES = {
   '/performance': 'Performance Notes',
   '/suppliers': 'Suppliers',
   '/messages': 'Messages',
+  '/audit': 'Audit Logs',
   '/finance': 'Finance Dashboard',
   '/finance/add': 'Add Finance Entry',
   '/profile': 'Profile',

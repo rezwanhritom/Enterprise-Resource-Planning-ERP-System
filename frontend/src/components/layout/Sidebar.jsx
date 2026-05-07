@@ -11,6 +11,7 @@ const PRIMARY_NAV_ITEMS = [
   { to: '/procurement', label: 'Procurement' },
   { to: '/performance', label: 'Performance' },
   { to: '/messages', label: 'Messages' },
+  { to: '/audit', label: 'Audit Logs' },
   { to: '/finance', label: 'Finance', disabled: true },
 ];
 
@@ -52,8 +53,11 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
     if (item.label === 'Finance') {
       return { ...item, to: financeRoute, disabled: !canAccessFinance };
     }
+    if (item.label === 'Audit Logs') {
+      return isAdmin ? item : null;
+    }
     return item;
-  });
+  }).filter(Boolean);
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`.trim()}>

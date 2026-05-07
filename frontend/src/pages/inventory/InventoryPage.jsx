@@ -5,6 +5,7 @@ import Button from '../../components/ui/Button.jsx';
 import Card from '../../components/ui/Card.jsx';
 import Input from '../../components/ui/Input.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { exportInventoryCsv } from '../../services/exportService.js';
 import {
   getInventorySummary,
   getItems,
@@ -29,6 +30,7 @@ export default function InventoryPage() {
   const [editingItemId, setEditingItemId] = useState('');
   const [editForm, setEditForm] = useState({ quantity: '', threshold: '' });
   const [updatingId, setUpdatingId] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -113,6 +115,20 @@ export default function InventoryPage() {
     []
   );
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      setError('');
+      await exportInventoryCsv();
+    } catch (requestError) {
+      const message =
+        requestError?.response?.data?.message || 'Unable to export inventory CSV.';
+      setError(message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <section className="page-header">
@@ -122,11 +138,18 @@ export default function InventoryPage() {
             Monitor stock levels, identify shortages, and maintain operational readiness.
           </p>
         </div>
-        {canManageInventory ? (
-          <Link to="/inventory/add">
-            <Button>Add Inventory Item</Button>
-          </Link>
-        ) : null}
+        <div className="page-actions">
+          {canManageInventory ? (
+            <Button variant="secondary" onClick={handleExport} disabled={isExporting}>
+              {isExporting ? 'Exporting...' : 'Export CSV'}
+            </Button>
+          ) : null}
+          {canManageInventory ? (
+            <Link to="/inventory/add">
+              <Button>Add Inventory Item</Button>
+            </Link>
+          ) : null}
+        </div>
       </section>
 
       {error ? <p className="form-error">{error}</p> : null}

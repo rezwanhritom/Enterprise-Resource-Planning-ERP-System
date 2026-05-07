@@ -4,6 +4,7 @@ import Procurement, { PROCUREMENT_STATUS } from '../models/Procurement.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { ROLES } from '../utils/roles.js';
+import createAuditLog from '../utils/createAuditLog.js';
 
 const REVIEWER_ROLES = [
   ROLES.ADMIN,
@@ -77,6 +78,12 @@ export const createRequest = asyncHandler(async (req, res) => {
     .populate('department', 'name')
     .populate('approvedBy', 'name email');
 
+  await createAuditLog({
+    userId: req.user?._id,
+    module: 'Procurement',
+    action: 'Procurement approved',
+  });
+
   return res.status(201).json({
     success: true,
     message: 'Procurement request created successfully',
@@ -103,6 +110,12 @@ export const approveRequest = asyncHandler(async (req, res) => {
     .populate('requestedBy', 'name email')
     .populate('department', 'name')
     .populate('approvedBy', 'name email');
+
+  await createAuditLog({
+    userId: req.user?._id,
+    module: 'Procurement',
+    action: 'Procurement rejected',
+  });
 
   return res.status(200).json({
     success: true,

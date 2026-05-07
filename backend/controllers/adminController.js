@@ -4,6 +4,7 @@ import { ALLOWED_ROLES, ROLES } from '../utils/roles.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiError from '../utils/ApiError.js';
 import { isValidEmail } from '../utils/validators.js';
+import createAuditLog from '../utils/createAuditLog.js';
 
 const sanitizeUser = (userDoc) => {
   const user = userDoc.toObject ? userDoc.toObject() : userDoc;
@@ -60,6 +61,12 @@ export const createUser = asyncHandler(async (req, res) => {
     roles: roleList,
     departments: departmentIds,
     isActive: typeof isActive === 'boolean' ? isActive : true,
+  });
+
+  await createAuditLog({
+    userId: req.user?._id,
+    module: 'User',
+    action: 'User created',
   });
 
   return res.status(201).json({

@@ -1,11 +1,14 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { storageKeys } from '../utils/storage.js';
 
 const AuthContext = createContext(null);
+const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
+const ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     const storedAuth = localStorage.getItem(storageKeys.auth);
@@ -46,6 +49,44 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(storageKeys.auth);
     localStorage.removeItem(storageKeys.token);
   };
+
+  useEffect(() => {
+    if (!token) {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      return undefined;
+    }
+
+    const inactivityTimeoutMs = Number(
+      import.meta.env.VITE_INACTIVITY_TIMEOUT_MS || DEFAULT_TIMEOUT_MS
+    );
+
+    const resetInactivityTimer = () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = window.setTimeout(() => {
+        logout();
+      }, inactivityTimeoutMs);
+    };
+
+    ACTIVITY_EVENTS.forEach((eventName) =>
+      window.addEventListener(eventName, resetInactivityTimer, { passive: true })
+    );
+    resetInactivityTimer();
+
+    return () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      ACTIVITY_EVENTS.forEach((eventName) =>
+        window.removeEventListener(eventName, resetInactivityTimer)
+      );
+    };
+  }, [token]);
 
   const value = useMemo(
     () => ({

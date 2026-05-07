@@ -22,6 +22,7 @@ import FinanceDashboardPage from './pages/finance/FinanceDashboardPage.jsx';
 import AddFinanceEntryPage from './pages/finance/AddFinanceEntryPage.jsx';
 import PerformancePage from './pages/performance/PerformancePage.jsx';
 import MessagesPage from './pages/messages/MessagesPage.jsx';
+import AuditLogsPage from './pages/audit/AuditLogsPage.jsx';
 
 function App() {
   return (
@@ -170,6 +171,14 @@ function App() {
             <ProtectedRoute>
               <MessagesPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/audit"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin']}>
+              <AuditLogsPage />
+            </RoleProtectedRoute>
           }
         />
         <Route

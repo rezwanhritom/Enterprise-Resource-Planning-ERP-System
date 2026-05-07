@@ -14,6 +14,8 @@ import procurementRoutes from './routes/procurementRoutes.js';
 import financeRoutes from './routes/financeRoutes.js';
 import performanceRoutes from './routes/performanceRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import exportRoutes from './routes/exportRoutes.js';
+import auditRoutes from './routes/auditRoutes.js';
 import globalErrorHandler from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -45,6 +47,8 @@ app.use('/api/procurement', procurementRoutes);
 app.use('/api/finance', financeRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/export', exportRoutes);
+app.use('/api/audit', auditRoutes);
 app.use('/api', routes);
 
 app.use((req, res) => {

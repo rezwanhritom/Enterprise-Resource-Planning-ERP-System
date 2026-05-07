@@ -125,3 +125,15 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
     data: employees,
   });
 });
+
+export const getEmployeeDirectory = asyncHandler(async (req, res) => {
+  const employees = await User.find({ isActive: true })
+    .select('_id name email')
+    .sort({ name: 1 });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Employee directory fetched successfully',
+    data: employees,
+  });
+});

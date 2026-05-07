@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Card from '../../components/ui/Card.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getAllEmployees } from '../../services/employeeService.js';
+import { getEmployeeDirectory } from '../../services/employeeService.js';
 import { getInbox, getMessages, sendMessage } from '../../services/messageService.js';
 
 const formatDateTime = (value) =>
@@ -47,7 +47,7 @@ export default function MessagesPage() {
         setError('');
         const [inboxData, employeeData] = await Promise.all([
           getInbox(),
-          getAllEmployees(),
+          getEmployeeDirectory(),
         ]);
         setInbox(inboxData);
         setContacts(employeeData.filter((employee) => employee._id !== user?._id));

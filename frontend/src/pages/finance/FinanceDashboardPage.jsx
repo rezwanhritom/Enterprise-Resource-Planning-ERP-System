@@ -14,6 +14,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Card from '../../components/ui/Card.jsx';
 import ChartCard from '../../components/charts/ChartCard.jsx';
+import { exportFinanceCsv } from '../../services/exportService.js';
 import { getReports, getTransactions } from '../../services/financeService.js';
 
 const formatCurrency = (value) =>
@@ -42,6 +43,7 @@ export default function FinanceDashboardPage() {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
 
   const loadData = async (filter = typeFilter, searchText = search) => {
     try {
@@ -99,6 +101,20 @@ export default function FinanceDashboardPage() {
     [report.recentTransactions]
   );
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      setError('');
+      await exportFinanceCsv();
+    } catch (requestError) {
+      const message =
+        requestError?.response?.data?.message || 'Unable to export finance CSV.';
+      setError(message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <section className="page-header">
@@ -108,9 +124,14 @@ export default function FinanceDashboardPage() {
             Review financial performance, recent activity, and transaction health.
           </p>
         </div>
-        <Link to="/finance/add">
-          <Button>Add Entry</Button>
-        </Link>
+        <div className="page-actions">
+          <Button variant="secondary" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? 'Exporting...' : 'Export CSV'}
+          </Button>
+          <Link to="/finance/add">
+            <Button>Add Entry</Button>
+          </Link>
+        </div>
       </section>
 
       {error ? <p className="form-error">{error}</p> : null}

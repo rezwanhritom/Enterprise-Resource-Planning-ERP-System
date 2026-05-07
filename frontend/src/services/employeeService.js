@@ -28,3 +28,8 @@ export const getAllEmployees = async (filters = {}) => {
   const response = await api.get('/employees/all', { params });
   return response.data?.data ?? [];
 };
+
+export const getEmployeeDirectory = async () => {
+  const response = await api.get('/employees/directory');
+  return response.data?.data ?? [];
+};

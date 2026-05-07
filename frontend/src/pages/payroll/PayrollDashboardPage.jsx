@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Card from '../../components/ui/Card.jsx';
+import { exportPayrollCsv } from '../../services/exportService.js';
 import { getAllPayrolls } from '../../services/payrollService.js';
 
 const formatCurrency = (value) =>
@@ -23,6 +24,7 @@ export default function PayrollDashboardPage() {
   const [payrolls, setPayrolls] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     const loadPayrolls = async () => {
@@ -54,6 +56,20 @@ export default function PayrollDashboardPage() {
     return { totalPayrolls, totalExpense, activeEmployees };
   }, [payrolls]);
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      setError('');
+      await exportPayrollCsv();
+    } catch (requestError) {
+      const message =
+        requestError?.response?.data?.message || 'Unable to export payroll CSV.';
+      setError(message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <section className="page-header">
@@ -63,9 +79,14 @@ export default function PayrollDashboardPage() {
             Review payroll entries, monthly payouts, and employee compensation records.
           </p>
         </div>
-        <Link to="/payroll/generate">
-          <Button>Generate Payroll</Button>
-        </Link>
+        <div className="page-actions">
+          <Button variant="secondary" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? 'Exporting...' : 'Export CSV'}
+          </Button>
+          <Link to="/payroll/generate">
+            <Button>Generate Payroll</Button>
+          </Link>
+        </div>
       </section>
 
       {error ? <p className="form-error">{error}</p> : null}
