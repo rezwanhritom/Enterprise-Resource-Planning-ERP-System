@@ -1,17 +1,70 @@
+import { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import Card from '../../components/ui/Card.jsx';
-import ChartCard from '../../components/charts/ChartCard.jsx';
+import AttendanceChart from '../../components/charts/AttendanceChart.jsx';
+import ExpenseChart from '../../components/charts/ExpenseChart.jsx';
+import InventoryChart from '../../components/charts/InventoryChart.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { getDashboardSummary } from '../../services/dashboardService.js';
 
-const DASHBOARD_STATS = [
-  { label: 'Headcount', value: '128', change: '+4 this month' },
-  { label: 'Departments', value: '12', change: '2 pending updates' },
-  { label: 'Attendance Today', value: '94%', change: '6 records pending' },
-  { label: 'Open Tasks', value: '23', change: '8 require approval' },
-];
+const formatCurrency = (value) =>
+  new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(value || 0);
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [summary, setSummary] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const loadSummary = async () => {
+      try {
+        setIsLoading(true);
+        setError('');
+        const response = await getDashboardSummary();
+        setSummary(response);
+      } catch (requestError) {
+        const message =
+          requestError?.response?.data?.message ||
+          'Unable to load dashboard summary right now.';
+        setError(message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSummary();
+  }, []);
+
+  const kpiCards = useMemo(
+    () => [
+      {
+        label: 'Total Employees',
+        value: summary?.counts?.totalEmployees ?? 0,
+        helper: 'Organization-wide employee records',
+      },
+      {
+        label: 'Present Today',
+        value: summary?.counts?.presentToday ?? 0,
+        helper: 'Attendance records marked as present today',
+      },
+      {
+        label: 'Total Salary Expense',
+        value: formatCurrency(summary?.salarySummary?.totalSalaryExpense ?? 0),
+        helper: 'Payroll module placeholder',
+      },
+      {
+        label: 'Low Stock Items',
+        value: summary?.counts?.lowStockItems ?? 0,
+        helper: 'Inventory module placeholder',
+      },
+    ],
+    [summary]
+  );
 
   return (
     <DashboardLayout>
@@ -25,36 +78,54 @@ export default function DashboardPage() {
         </p>
       </section>
 
+      {error ? <p className="form-error dashboard-error">{error}</p> : null}
+
       <section className="kpi-grid">
-        {DASHBOARD_STATS.map((item) => (
-          <Card key={item.label} className="kpi-card">
-            <p className="kpi-label">{item.label}</p>
-            <h3 className="kpi-value">{item.value}</h3>
-            <p className="kpi-change">{item.change}</p>
-          </Card>
-        ))}
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <Card key={`kpi-skeleton-${index}`} className="kpi-card kpi-card-skeleton">
+                <div className="skeleton skeleton-line skeleton-line-sm" />
+                <div className="skeleton skeleton-line skeleton-line-lg" />
+                <div className="skeleton skeleton-line skeleton-line-md" />
+              </Card>
+            ))
+          : kpiCards.map((item) => (
+              <Card key={item.label} className="kpi-card">
+                <p className="kpi-label">{item.label}</p>
+                <h3 className="kpi-value">{item.value}</h3>
+                <p className="kpi-change">{item.helper}</p>
+              </Card>
+            ))}
       </section>
 
       <section className="dashboard-grid">
-        <ChartCard
-          title="Operational Trends"
-          subtitle="Reserved for utilization and throughput analytics"
+        <AttendanceChart
+          data={summary?.charts?.attendanceChart ?? []}
+          isLoading={isLoading}
         />
-        <ChartCard
-          title="Team Activity"
-          subtitle="Reserved for approvals and workflow movement"
+        <ExpenseChart
+          data={summary?.charts?.expenseChart ?? []}
+          isLoading={isLoading}
+        />
+      </section>
+
+      <section className="dashboard-grid dashboard-grid-single">
+        <InventoryChart
+          data={summary?.charts?.inventoryChart ?? []}
+          isLoading={isLoading}
         />
       </section>
 
       <section className="dashboard-grid dashboard-grid-single">
         <Card
-          title="Recent Activity"
-          subtitle="Team actions and workflow timeline foundation"
+          title="Module Readiness"
+          subtitle="Current dashboard integrations and expansion points"
         >
-          <p className="muted-copy">
-            Activity feeds, approval logs, and module events will appear in this
-            area once Sprint 3 modules are connected.
-          </p>
+          <ul className="dashboard-notes">
+            <li>Employee, department, and attendance KPIs are now live.</li>
+            <li>Attendance weekly trend is sourced from real records.</li>
+            <li>Payroll and inventory chart areas are scaffolded for Sprint 3.</li>
+          </ul>
         </Card>
       </section>
     </DashboardLayout>

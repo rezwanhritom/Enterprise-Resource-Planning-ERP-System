@@ -468,6 +468,16 @@ p {
 
 .kpi-card {
   padding: 1rem 1rem 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.kpi-card-skeleton {
+  pointer-events: none;
 }
 
 .kpi-label {
@@ -513,6 +523,62 @@ p {
 .chart-card-placeholder p {
   font-size: 0.9rem;
   color: #6b7280;
+  text-align: center;
+}
+
+.dashboard-error {
+  margin-bottom: 0.85rem;
+}
+
+.dashboard-notes {
+  list-style: disc;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.45rem;
+  color: #4b5563;
+  font-size: 0.93rem;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #e5e7eb;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: skeleton-shimmer 1.25s infinite;
+}
+
+.skeleton-line {
+  height: 12px;
+  margin-bottom: 0.52rem;
+}
+
+.skeleton-line-sm {
+  width: 42%;
+}
+
+.skeleton-line-md {
+  width: 72%;
+}
+
+.skeleton-line-lg {
+  width: 56%;
+  height: 31px;
+  margin-top: 0.42rem;
+  margin-bottom: 0.62rem;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .muted-copy {
