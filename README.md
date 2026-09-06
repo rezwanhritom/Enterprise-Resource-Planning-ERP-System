@@ -3,6 +3,8 @@
 A full-stack, **multi-tenant ERP** built with the **MERN** stack (MongoDB, Express, React, Node.js).  
 Organizations register their own company workspace, pick which modules to enable, and manage people, operations, finance, and communications from one place.
 
+**Live demo:** [https://enterprise-resource-planner.onrender.com/](https://enterprise-resource-planner.onrender.com/)
+
 ---
 
 ## Why this project
