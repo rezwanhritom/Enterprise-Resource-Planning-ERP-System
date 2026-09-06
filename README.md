@@ -61,6 +61,52 @@ flowchart LR
 
 ---
 
+## Screenshots
+
+Live captures from the **NovaForge Labs** demo workspace. Image files are in [`assets/screenshots/`](./assets/screenshots/).
+
+### Public pages
+
+| Landing | Register |
+|---|---|
+| ![Landing](./assets/screenshots/01-landing.png) | ![Register choice](./assets/screenshots/02-register-choice.png) |
+
+| Create company | Join company |
+|---|---|
+| ![Register company](./assets/screenshots/03-register-company.png) | ![Join company](./assets/screenshots/04-register-join.png) |
+
+<p align="center">
+  <img src="./assets/screenshots/05-login.png" alt="Sign in page" width="520" />
+</p>
+
+### App workspace
+
+| Dashboard | Employees |
+|---|---|
+| ![Dashboard](./assets/screenshots/06-dashboard.png) | ![Employees](./assets/screenshots/07-employees.png) |
+
+| Attendance | Leave |
+|---|---|
+| ![Attendance](./assets/screenshots/08-attendance.png) | ![Leave](./assets/screenshots/09-leave.png) |
+
+| Payroll | Inventory |
+|---|---|
+| ![Payroll](./assets/screenshots/10-payroll.png) | ![Inventory](./assets/screenshots/11-inventory.png) |
+
+| Messages | Peer reviews |
+|---|---|
+| ![Messages](./assets/screenshots/12-messages.png) | ![Peer reviews](./assets/screenshots/13-peer-reviews.png) |
+
+| Announcements | Company settings |
+|---|---|
+| ![Announcements](./assets/screenshots/14-announcements.png) | ![Company settings](./assets/screenshots/15-company-settings.png) |
+
+<p align="center">
+  <img src="./assets/screenshots/16-admin-users.png" alt="Manage users" width="900" />
+</p>
+
+---
+
 ## Screens & flows (product tour)
 
 1. **Landing** (`/`) — marketing hero, feature overview, register / sign-in CTAs  
