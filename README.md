@@ -274,16 +274,3 @@ Every core domain document carries a `company` ObjectId. Controllers filter with
 
 ---
 
-## What recruiters should notice
-
-- End-to-end product thinking (landing → onboarding → RBAC workspace)  
-- Multi-tenant data modeling, not just UI tabs  
-- JWT + Socket.io together  
-- Multi-company demo data already loaded in MongoDB  
-- Separated MVC backend and componentized React frontend  
-
----
-
-## License
-
-ISC — educational / portfolio project.
