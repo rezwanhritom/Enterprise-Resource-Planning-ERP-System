@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 const payrollSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -46,6 +52,7 @@ const payrollSchema = new mongoose.Schema(
 );
 
 payrollSchema.index({ userId: 1, month: 1 }, { unique: true });
+payrollSchema.index({ company: 1, month: 1 });
 
 const Payroll = mongoose.model('Payroll', payrollSchema);
 

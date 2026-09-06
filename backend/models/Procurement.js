@@ -24,6 +24,12 @@ const procurementItemSchema = new mongoose.Schema(
 
 const procurementSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     requestedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

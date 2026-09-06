@@ -8,6 +8,12 @@ export const ATTENDANCE_STATUS = Object.freeze({
 
 const attendanceSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -27,6 +33,17 @@ const attendanceSchema = new mongoose.Schema(
       required: true,
       default: ATTENDANCE_STATUS.PRESENT,
     },
+    checkInAt: {
+      type: Date,
+    },
+    checkOutAt: {
+      type: Date,
+    },
+    notes: {
+      type: String,
+      trim: true,
+      default: '',
+    },
   },
   { timestamps: true }
 );
@@ -41,6 +58,7 @@ attendanceSchema.pre('validate', function normalizeDate(next) {
 });
 
 attendanceSchema.index({ userId: 1, date: 1 }, { unique: true });
+attendanceSchema.index({ company: 1, date: 1 });
 
 const Attendance = mongoose.model('Attendance', attendanceSchema);
 

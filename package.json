@@ -9,7 +9,8 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "start": "cd backend && npm start",
-    "build": "cd frontend && npm run build"
+    "build": "cd frontend && npm run build",
+    "seed:demo": "cd backend && npm run seed:demo"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

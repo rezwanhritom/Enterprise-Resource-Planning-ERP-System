@@ -18,6 +18,11 @@ const globalErrorHandler = (err, req, res, next) => {
   if (err.code === 11000) {
     if (Object.prototype.hasOwnProperty.call(err.keyPattern || {}, 'email')) {
       error = new ApiError(409, 'User with this email already exists');
+    } else if (
+      Object.prototype.hasOwnProperty.call(err.keyPattern || {}, 'name') ||
+      Object.prototype.hasOwnProperty.call(err.keyPattern || {}, 'slug')
+    ) {
+      error = new ApiError(409, 'A company with this name already exists');
     } else {
       error = new ApiError(409, 'Duplicate field value entered');
     }

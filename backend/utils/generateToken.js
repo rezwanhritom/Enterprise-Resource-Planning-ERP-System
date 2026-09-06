@@ -1,9 +1,15 @@
 import jwt from 'jsonwebtoken';
 
-const generateToken = ({ userId, roles }) => {
-  return jwt.sign({ userId, roles }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
-  });
-};
-
-export default generateToken;
+/**
+ * Backward-compatible wrapper.
+ * Prefer importing from ./jwt.js for access/refresh helpers.
+ */
+export {
+  default,
+  signAccessToken,
+  signRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  issueAuthTokens,
+  hashToken,
+} from './jwt.js';

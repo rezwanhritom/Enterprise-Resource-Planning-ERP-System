@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 const performanceSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     employeeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

@@ -5,6 +5,7 @@ import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { ROLES } from '../utils/roles.js';
 import createAuditLog from '../utils/createAuditLog.js';
+import { getCompanyId, companyFilter } from '../utils/companyScope.js';
 
 const REVIEWER_ROLES = [
   ROLES.ADMIN,
@@ -54,12 +55,20 @@ export const createRequest = asyncHandler(async (req, res) => {
     throw new ApiError(401, 'Unauthorized user');
   }
 
+  const companyId = getCompanyId(req.user);
+  if (!companyId) {
+    throw new ApiError(400, 'User is not linked to a company');
+  }
+
   const { department } = req.body || {};
   if (!department || !mongoose.Types.ObjectId.isValid(department)) {
     throw new ApiError(400, 'A valid department is required');
   }
 
-  const departmentExists = await Department.findById(department).select('_id');
+  const departmentExists = await Department.findOne({
+    _id: department,
+    ...companyFilter(req.user),
+  }).select('_id');
   if (!departmentExists) {
     throw new ApiError(404, 'Department not found');
   }
@@ -71,6 +80,7 @@ export const createRequest = asyncHandler(async (req, res) => {
     department,
     items: parsedItems,
     status: PROCUREMENT_STATUS.PENDING,
+    company: companyId,
   });
 
   const populated = await Procurement.findById(request._id)
@@ -82,6 +92,7 @@ export const createRequest = asyncHandler(async (req, res) => {
     userId: req.user?._id,
     module: 'Procurement',
     action: 'Procurement approved',
+    company: companyId,
   });
 
   return res.status(201).json({
@@ -97,7 +108,10 @@ export const approveRequest = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid procurement request id');
   }
 
-  const request = await Procurement.findById(id);
+  const request = await Procurement.findOne({
+    _id: id,
+    ...companyFilter(req.user),
+  });
   ensurePendingRequest(request);
 
   request.status = PROCUREMENT_STATUS.APPROVED;
@@ -115,6 +129,7 @@ export const approveRequest = asyncHandler(async (req, res) => {
     userId: req.user?._id,
     module: 'Procurement',
     action: 'Procurement rejected',
+    company: getCompanyId(req.user) || undefined,
   });
 
   return res.status(200).json({
@@ -130,7 +145,10 @@ export const rejectRequest = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid procurement request id');
   }
 
-  const request = await Procurement.findById(id);
+  const request = await Procurement.findOne({
+    _id: id,
+    ...companyFilter(req.user),
+  });
   ensurePendingRequest(request);
 
   const rejectionReason =
@@ -155,7 +173,7 @@ export const rejectRequest = asyncHandler(async (req, res) => {
 });
 
 export const getRequests = asyncHandler(async (req, res) => {
-  const query = {};
+  const query = { ...companyFilter(req.user) };
 
   if (req.query?.status) {
     const status = String(req.query.status).toLowerCase().trim();

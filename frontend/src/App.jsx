@@ -1,7 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import RoleProtectedRoute from './components/auth/RoleProtectedRoute.jsx';
+import LandingPage from './pages/landing/LandingPage.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
+import RegisterChoicePage from './pages/auth/RegisterChoicePage.jsx';
+import RegisterCompanyPage from './pages/auth/RegisterCompanyPage.jsx';
+import RegisterJoinPage from './pages/auth/RegisterJoinPage.jsx';
+import JoinRequestsPage from './pages/admin/JoinRequestsPage.jsx';
 import DashboardPage from './pages/dashboard/DashboardPage.jsx';
 import DepartmentsPage from './pages/departments/DepartmentsPage.jsx';
 import CreateDepartmentPage from './pages/departments/CreateDepartmentPage.jsx';
@@ -23,12 +28,45 @@ import AddFinanceEntryPage from './pages/finance/AddFinanceEntryPage.jsx';
 import PerformancePage from './pages/performance/PerformancePage.jsx';
 import MessagesPage from './pages/messages/MessagesPage.jsx';
 import AuditLogsPage from './pages/audit/AuditLogsPage.jsx';
+import LeavePage from './pages/leave/LeavePage.jsx';
+import PeerReviewsPage from './pages/peerReviews/PeerReviewsPage.jsx';
+import AnnouncementsPage from './pages/announcements/AnnouncementsPage.jsx';
+import CompanySettingsPage from './pages/admin/CompanySettingsPage.jsx';
+import UsersAdminPage from './pages/admin/UsersAdminPage.jsx';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterChoicePage />} />
+        <Route path="/register/company" element={<RegisterCompanyPage />} />
+        <Route path="/register/join" element={<RegisterJoinPage />} />
+        <Route
+          path="/join-requests"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin']}>
+              <JoinRequestsPage />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/company-settings"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin']}>
+              <CompanySettingsPage />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <RoleProtectedRoute allowedRoles={['Admin']}>
+              <UsersAdminPage />
+            </RoleProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={
@@ -91,6 +129,14 @@ function App() {
             <RoleProtectedRoute allowedRoles={['Admin', 'HR Manager']}>
               <AttendanceManagementPage />
             </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/leave"
+          element={
+            <ProtectedRoute>
+              <LeavePage />
+            </ProtectedRoute>
           }
         />
         <Route
@@ -166,6 +212,22 @@ function App() {
           }
         />
         <Route
+          path="/peer-reviews"
+          element={
+            <ProtectedRoute>
+              <PeerReviewsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/announcements"
+          element={
+            <ProtectedRoute>
+              <AnnouncementsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/messages"
           element={
             <ProtectedRoute>
@@ -201,7 +263,7 @@ function App() {
             </RoleProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

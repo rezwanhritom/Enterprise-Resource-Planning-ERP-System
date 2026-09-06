@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import Inventory from '../models/Inventory.js';
-import User from '../models/User.js';
+import Supplier from '../models/Supplier.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { getCompanyId, companyFilter } from '../utils/companyScope.js';
 
 const normalizeItemName = (value) => {
   if (typeof value !== 'string' || !value.trim()) {
@@ -30,12 +31,17 @@ const parseNonNegativeNumber = (value, fieldName, { required = false } = {}) => 
 const parseSupplierId = (value) => {
   if (value === undefined || value === null || value === '') return undefined;
   if (!mongoose.Types.ObjectId.isValid(value)) {
-    throw new ApiError(400, 'Supplier must be a valid user');
+    throw new ApiError(400, 'Supplier must be a valid supplier ID');
   }
   return value;
 };
 
 export const addItem = asyncHandler(async (req, res) => {
+  const companyId = getCompanyId(req.user);
+  if (!companyId) {
+    throw new ApiError(400, 'User is not linked to a company');
+  }
+
   const itemName = normalizeItemName(req.body?.itemName);
   const quantity = parseNonNegativeNumber(req.body?.quantity, 'Quantity', {
     required: true,
@@ -47,15 +53,19 @@ export const addItem = asyncHandler(async (req, res) => {
 
   const duplicate = await Inventory.findOne({
     itemName: { $regex: `^${itemName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+    ...companyFilter(req.user),
   }).select('_id');
   if (duplicate) {
     throw new ApiError(409, 'An inventory item with this name already exists');
   }
 
   if (supplierId) {
-    const supplier = await User.findById(supplierId).select('_id');
+    const supplier = await Supplier.findOne({
+      _id: supplierId,
+      ...companyFilter(req.user),
+    }).select('_id');
     if (!supplier) {
-      throw new ApiError(404, 'Supplier user not found');
+      throw new ApiError(404, 'Supplier not found');
     }
   }
 
@@ -64,6 +74,7 @@ export const addItem = asyncHandler(async (req, res) => {
     quantity,
     threshold,
     supplierId,
+    company: companyId,
   });
 
   const populated = await Inventory.findById(created._id).populate(
@@ -84,7 +95,10 @@ export const updateStock = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid inventory item id');
   }
 
-  const item = await Inventory.findById(id);
+  const item = await Inventory.findOne({
+    _id: id,
+    ...companyFilter(req.user),
+  });
   if (!item) {
     throw new ApiError(404, 'Inventory item not found');
   }
@@ -104,9 +118,12 @@ export const updateStock = asyncHandler(async (req, res) => {
   if (Object.prototype.hasOwnProperty.call(req.body || {}, 'supplierId')) {
     const supplierId = parseSupplierId(req.body.supplierId);
     if (supplierId) {
-      const supplier = await User.findById(supplierId).select('_id');
+      const supplier = await Supplier.findOne({
+        _id: supplierId,
+        ...companyFilter(req.user),
+      }).select('_id');
       if (!supplier) {
-        throw new ApiError(404, 'Supplier user not found');
+        throw new ApiError(404, 'Supplier not found');
       }
       item.supplierId = supplierId;
     } else {
@@ -128,7 +145,7 @@ export const updateStock = asyncHandler(async (req, res) => {
 });
 
 export const getItems = asyncHandler(async (req, res) => {
-  const query = {};
+  const query = { ...companyFilter(req.user) };
 
   if (typeof req.query?.search === 'string' && req.query.search.trim()) {
     query.itemName = { $regex: req.query.search.trim(), $options: 'i' };
@@ -152,10 +169,13 @@ export const getItems = asyncHandler(async (req, res) => {
 });
 
 export const getInventorySummary = asyncHandler(async (req, res) => {
+  const scope = companyFilter(req.user);
+
   const [totalItems, lowStockCount, quantityRows] = await Promise.all([
-    Inventory.countDocuments(),
-    Inventory.countDocuments({ isLowStock: true }),
+    Inventory.countDocuments(scope),
+    Inventory.countDocuments({ ...scope, isLowStock: true }),
     Inventory.aggregate([
+      { $match: scope },
       {
         $group: {
           _id: null,

@@ -5,6 +5,7 @@ import Inventory from '../models/Inventory.js';
 import Payroll from '../models/Payroll.js';
 import User from '../models/User.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { companyFilter } from '../utils/companyScope.js';
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -38,6 +39,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
   const today = getStartOfDay(new Date());
   const sevenDaysAgo = new Date(today);
   sevenDaysAgo.setDate(today.getDate() - 6);
+  const scope = companyFilter(req.user);
 
   const [
     totalEmployees,
@@ -49,16 +51,18 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
     financeRows,
   ] =
     await Promise.all([
-      User.countDocuments(),
+      User.countDocuments(scope),
       Attendance.countDocuments({
+        ...scope,
         date: today,
         status: ATTENDANCE_STATUS.PRESENT,
       }),
-      Department.countDocuments(),
-      Inventory.countDocuments({ isLowStock: true }),
+      Department.countDocuments(scope),
+      Inventory.countDocuments({ ...scope, isLowStock: true }),
       Attendance.aggregate([
         {
           $match: {
+            ...scope,
             date: { $gte: sevenDaysAgo, $lte: today },
             status: ATTENDANCE_STATUS.PRESENT,
           },
@@ -72,6 +76,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
         { $sort: { _id: 1 } },
       ]),
       Payroll.aggregate([
+        { $match: scope },
         {
           $group: {
             _id: null,
@@ -80,6 +85,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
         },
       ]),
       Finance.aggregate([
+        { $match: scope },
         {
           $group: {
             _id: '$type',

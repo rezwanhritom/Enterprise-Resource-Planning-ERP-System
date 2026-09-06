@@ -2,9 +2,10 @@ import mongoose from 'mongoose';
 import AuditLog from '../models/AuditLog.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { companyFilter } from '../utils/companyScope.js';
 
 export const getAuditLogs = asyncHandler(async (req, res) => {
-  const query = {};
+  const query = { ...companyFilter(req.user) };
 
   if (typeof req.query?.action === 'string' && req.query.action.trim()) {
     query.action = { $regex: req.query.action.trim(), $options: 'i' };

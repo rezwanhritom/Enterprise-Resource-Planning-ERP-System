@@ -1,6 +1,7 @@
 import Finance, { FINANCE_TYPE } from '../models/Finance.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { getCompanyId, companyFilter } from '../utils/companyScope.js';
 
 const parseAmount = (amount) => {
   const parsed = Number(amount);
@@ -56,8 +57,8 @@ const parseDateFilter = (month, year) => {
   };
 };
 
-const buildQuery = (query = {}) => {
-  const filter = {};
+const buildQuery = (query = {}, user) => {
+  const filter = { ...companyFilter(user) };
   const type = parseTypeFilter(query.type);
   if (type) filter.type = type;
 
@@ -72,6 +73,11 @@ const buildQuery = (query = {}) => {
 };
 
 const createFinanceEntry = async (req, res, type) => {
+  const companyId = getCompanyId(req.user);
+  if (!companyId) {
+    throw new ApiError(400, 'User is not linked to a company');
+  }
+
   const amount = parseAmount(req.body?.amount);
   const category = parseCategory(req.body?.category);
   const description =
@@ -83,6 +89,7 @@ const createFinanceEntry = async (req, res, type) => {
     category,
     description,
     createdBy: req.user?._id,
+    company: companyId,
   });
 
   return res.status(201).json({
@@ -101,7 +108,7 @@ export const addRevenue = asyncHandler(async (req, res) =>
 );
 
 export const getTransactions = asyncHandler(async (req, res) => {
-  const filter = buildQuery(req.query || {});
+  const filter = buildQuery(req.query || {}, req.user);
 
   const transactions = await Finance.find(filter)
     .sort({ date: -1, createdAt: -1 })
@@ -115,7 +122,7 @@ export const getTransactions = asyncHandler(async (req, res) => {
 });
 
 export const getReports = asyncHandler(async (req, res) => {
-  const filter = buildQuery(req.query || {});
+  const filter = buildQuery(req.query || {}, req.user);
 
   const [summaryRows, recentTransactions] = await Promise.all([
     Finance.aggregate([

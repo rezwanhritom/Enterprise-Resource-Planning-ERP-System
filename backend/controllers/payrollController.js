@@ -5,6 +5,11 @@ import User from '../models/User.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import createAuditLog from '../utils/createAuditLog.js';
+import {
+  getCompanyId,
+  companyFilter,
+  assertSameCompany,
+} from '../utils/companyScope.js';
 
 const MONTH_REGEX = /^\d{4}-(0[1-9]|1[0-2])$/;
 
@@ -51,6 +56,11 @@ export const calculateSalary = ({ baseSalary, bonus = 0, deductions = 0 }) => {
 
 export const generatePayroll = asyncHandler(async (req, res) => {
   const { userId, month } = req.body || {};
+  const companyId = getCompanyId(req.user);
+
+  if (!companyId) {
+    throw new ApiError(400, 'User is not linked to a company');
+  }
 
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(400, 'A valid employee userId is required');
@@ -64,12 +74,20 @@ export const generatePayroll = asyncHandler(async (req, res) => {
   const bonus = parseMoney(req.body?.bonus, 'Bonus');
 
   const [employee, existingPayroll] = await Promise.all([
-    User.findById(userId).select('_id name email isActive'),
-    Payroll.findOne({ userId, month: normalizedMonth }).select('_id'),
+    User.findById(userId).select('_id name email isActive company'),
+    Payroll.findOne({
+      userId,
+      month: normalizedMonth,
+      ...companyFilter(req.user),
+    }).select('_id'),
   ]);
 
   if (!employee) {
     throw new ApiError(404, 'Employee not found');
+  }
+
+  if (!assertSameCompany(req.user, employee)) {
+    throw new ApiError(403, 'Cannot generate payroll for a user outside your company');
   }
 
   if (!employee.isActive) {
@@ -85,6 +103,7 @@ export const generatePayroll = asyncHandler(async (req, res) => {
     userId,
     status: ATTENDANCE_STATUS.PRESENT,
     date: { $gte: start, $lt: end },
+    ...companyFilter(req.user),
   });
 
   const finalSalary = calculateSalary({ baseSalary, bonus, deductions });
@@ -100,6 +119,7 @@ export const generatePayroll = asyncHandler(async (req, res) => {
       finalSalary,
       month: normalizedMonth,
       generatedBy: req.user?._id,
+      company: companyId,
     });
   } catch (error) {
     if (error?.code === 11000) {
@@ -116,6 +136,7 @@ export const generatePayroll = asyncHandler(async (req, res) => {
     userId: req.user?._id,
     module: 'Payroll',
     action: 'Payroll generated',
+    company: companyId,
   });
 
   return res.status(201).json({
@@ -130,7 +151,7 @@ export const getPayrollByUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, 'Unauthorized user');
   }
 
-  const query = { userId: req.user._id };
+  const query = { userId: req.user._id, ...companyFilter(req.user) };
   if (req.query?.month !== undefined) {
     query.month = validateMonth(req.query.month);
   }
@@ -147,7 +168,7 @@ export const getPayrollByUser = asyncHandler(async (req, res) => {
 });
 
 export const getAllPayrolls = asyncHandler(async (req, res) => {
-  const query = {};
+  const query = { ...companyFilter(req.user) };
   if (req.query?.month !== undefined) {
     query.month = validateMonth(req.query.month);
   }

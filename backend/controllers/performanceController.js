@@ -4,6 +4,11 @@ import User from '../models/User.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { ROLES } from '../utils/roles.js';
+import {
+  getCompanyId,
+  companyFilter,
+  assertSameCompany,
+} from '../utils/companyScope.js';
 
 const PERFORMANCE_MANAGER_ROLES = [
   ROLES.ADMIN,
@@ -37,6 +42,11 @@ export const addNote = asyncHandler(async (req, res) => {
     throw new ApiError(401, 'Unauthorized user');
   }
 
+  const companyId = getCompanyId(req.user);
+  if (!companyId) {
+    throw new ApiError(400, 'User is not linked to a company');
+  }
+
   const employeeId = parseEmployeeId(req.body?.employeeId);
   const note = typeof req.body?.note === 'string' ? req.body.note.trim() : '';
   const rating = parseRating(req.body?.rating);
@@ -45,9 +55,15 @@ export const addNote = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Performance note is required');
   }
 
-  const employee = await User.findById(employeeId).select('_id name email isActive');
+  const employee = await User.findById(employeeId).select(
+    '_id name email isActive company'
+  );
   if (!employee) {
     throw new ApiError(404, 'Employee not found');
+  }
+
+  if (!assertSameCompany(req.user, employee)) {
+    throw new ApiError(403, 'Cannot add a note for a user outside your company');
   }
 
   if (!employee.isActive) {
@@ -59,6 +75,7 @@ export const addNote = asyncHandler(async (req, res) => {
     managerId: req.user._id,
     note,
     rating,
+    company: companyId,
   });
 
   const populated = await Performance.findById(created._id)
@@ -78,13 +95,16 @@ export const getEmployeeNotes = asyncHandler(async (req, res) => {
   }
 
   const managerView = isPerformanceManager(req.user);
-  const query = {};
+  const query = { ...companyFilter(req.user) };
 
   if (managerView && req.query?.employeeId) {
     const employeeId = parseEmployeeId(req.query.employeeId, 'Employee filter');
-    const employee = await User.findById(employeeId).select('_id');
+    const employee = await User.findById(employeeId).select('_id company');
     if (!employee) {
       throw new ApiError(404, 'Employee not found');
+    }
+    if (!assertSameCompany(req.user, employee)) {
+      throw new ApiError(403, 'Cannot view notes for a user outside your company');
     }
     query.employeeId = employeeId;
   } else if (!managerView) {

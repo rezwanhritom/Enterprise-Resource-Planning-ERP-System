@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Card from '../../components/ui/Card.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getEmployeeDirectory } from '../../services/employeeService.js';
 import { getInbox, getMessages, sendMessage } from '../../services/messageService.js';
+import { getSocket } from '../../services/socket.js';
 
 const formatDateTime = (value) =>
   new Date(value).toLocaleString(undefined, {
@@ -34,6 +35,11 @@ export default function MessagesPage() {
   const [isConversationLoading, setIsConversationLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
+  const selectedUserIdRef = useRef(selectedUserId);
+
+  useEffect(() => {
+    selectedUserIdRef.current = selectedUserId;
+  }, [selectedUserId]);
 
   const activeConversation = useMemo(
     () => inbox.find((conversation) => conversation.user?._id === selectedUserId),
@@ -92,6 +98,39 @@ export default function MessagesPage() {
     loadConversation();
   }, [selectedUserId]);
 
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return undefined;
+
+    const handleNewMessage = (payload) => {
+      if (!payload) return;
+      const activeId = selectedUserIdRef.current;
+      const senderId = payload.senderId?._id || payload.senderId;
+      const receiverId = payload.receiverId?._id || payload.receiverId;
+      const involvesSelected =
+        String(senderId) === String(activeId) ||
+        String(receiverId) === String(activeId);
+
+      if (involvesSelected) {
+        setMessages((prev) => {
+          if (prev.some((item) => String(item._id) === String(payload._id))) {
+            return prev;
+          }
+          return [...prev, payload];
+        });
+      }
+
+      getInbox()
+        .then((data) => setInbox(data))
+        .catch(() => {});
+    };
+
+    socket.on('message:new', handleNewMessage);
+    return () => {
+      socket.off('message:new', handleNewMessage);
+    };
+  }, []);
+
   const refreshInbox = async () => {
     const data = await getInbox();
     setInbox(data);
@@ -115,11 +154,41 @@ export default function MessagesPage() {
     try {
       setIsSending(true);
       setError('');
-      const created = await sendMessage({
-        receiverId: selectedUserId,
-        message: trimmed,
+
+      const socket = getSocket();
+      let created = null;
+
+      if (socket?.connected) {
+        created = await new Promise((resolve) => {
+          const timeout = window.setTimeout(() => resolve(null), 4000);
+          socket.emit(
+            'message:send',
+            { receiverId: selectedUserId, message: trimmed },
+            (ack) => {
+              window.clearTimeout(timeout);
+              if (ack?.success && ack?.data) {
+                resolve(ack.data);
+              } else {
+                resolve(null);
+              }
+            }
+          );
+        });
+      }
+
+      if (!created) {
+        created = await sendMessage({
+          receiverId: selectedUserId,
+          message: trimmed,
+        });
+      }
+
+      setMessages((prev) => {
+        if (prev.some((item) => String(item._id) === String(created._id))) {
+          return prev;
+        }
+        return [...prev, created];
       });
-      setMessages((prev) => [...prev, created]);
       setMessageText('');
       await refreshInbox();
     } catch (requestError) {

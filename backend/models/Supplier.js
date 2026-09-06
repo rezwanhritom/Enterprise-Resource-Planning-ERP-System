@@ -2,11 +2,16 @@ import mongoose from 'mongoose';
 
 const supplierSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     name: {
       type: String,
       required: [true, 'Supplier name is required'],
       trim: true,
-      unique: true,
     },
     contact: {
       type: String,
@@ -23,11 +28,6 @@ const supplierSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
-    company: {
-      type: String,
-      trim: true,
-      default: '',
-    },
     notes: {
       type: String,
       trim: true,
@@ -36,6 +36,8 @@ const supplierSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+supplierSchema.index({ company: 1, name: 1 }, { unique: true });
 
 const Supplier = mongoose.model('Supplier', supplierSchema);
 

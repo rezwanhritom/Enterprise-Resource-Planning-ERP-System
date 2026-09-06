@@ -2,11 +2,16 @@ import mongoose from 'mongoose';
 
 const inventorySchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     itemName: {
       type: String,
       required: [true, 'Item name is required'],
       trim: true,
-      unique: true,
     },
     quantity: {
       type: Number,
@@ -20,7 +25,7 @@ const inventorySchema = new mongoose.Schema(
     },
     supplierId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Supplier',
     },
     isLowStock: {
       type: Boolean,
@@ -46,6 +51,8 @@ inventorySchema.pre('validate', function syncLowStock(next) {
   this.isLowStock = quantity < threshold;
   next();
 });
+
+inventorySchema.index({ company: 1, itemName: 1 }, { unique: true });
 
 const Inventory = mongoose.model('Inventory', inventorySchema);
 

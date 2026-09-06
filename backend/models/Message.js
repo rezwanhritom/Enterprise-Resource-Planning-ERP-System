@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -37,6 +43,8 @@ const messageSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+messageSchema.index({ company: 1, senderId: 1, receiverId: 1, timestamp: -1 });
 
 const Message = mongoose.model('Message', messageSchema);
 

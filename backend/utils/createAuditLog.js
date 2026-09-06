@@ -1,6 +1,6 @@
 import AuditLog from '../models/AuditLog.js';
 
-const createAuditLog = async ({ userId, action, module }) => {
+const createAuditLog = async ({ userId, action, module, company }) => {
   if (!action || !module) {
     return null;
   }
@@ -9,6 +9,7 @@ const createAuditLog = async ({ userId, action, module }) => {
     userId: userId || undefined,
     action: String(action).trim(),
     module: String(module).trim(),
+    ...(company ? { company } : {}),
   });
 };
 

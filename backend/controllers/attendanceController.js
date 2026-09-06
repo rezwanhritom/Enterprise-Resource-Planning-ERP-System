@@ -1,6 +1,7 @@
 import Attendance, { ATTENDANCE_STATUS } from '../models/Attendance.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiError from '../utils/ApiError.js';
+import { getCompanyId, companyFilter } from '../utils/companyScope.js';
 
 const allowedStatus = Object.values(ATTENDANCE_STATUS);
 
@@ -24,6 +25,11 @@ export const markAttendance = asyncHandler(async (req, res) => {
     throw new ApiError(401, 'Unauthorized user');
   }
 
+  const companyId = getCompanyId(req.user);
+  if (!companyId) {
+    throw new ApiError(400, 'User is not linked to a company');
+  }
+
   const status =
     typeof req.body?.status === 'string'
       ? req.body.status.trim().toLowerCase()
@@ -38,6 +44,7 @@ export const markAttendance = asyncHandler(async (req, res) => {
   const existing = await Attendance.findOne({
     userId: req.user._id,
     date: attendanceDate,
+    ...companyFilter(req.user),
   });
 
   if (existing) {
@@ -48,6 +55,7 @@ export const markAttendance = asyncHandler(async (req, res) => {
     userId: req.user._id,
     date: attendanceDate,
     status,
+    company: companyId,
   });
 
   return res.status(201).json({
@@ -73,7 +81,7 @@ export const getAttendanceByUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Year must be between 1970 and 3000');
   }
 
-  const filter = { userId: req.user._id };
+  const filter = { userId: req.user._id, ...companyFilter(req.user) };
 
   if (year !== undefined || month !== undefined) {
     const targetYear = year ?? new Date().getFullYear();
@@ -96,7 +104,7 @@ export const getAttendanceByUser = asyncHandler(async (req, res) => {
 });
 
 export const getAllAttendance = asyncHandler(async (req, res) => {
-  const records = await Attendance.find({})
+  const records = await Attendance.find({ ...companyFilter(req.user) })
     .populate('userId', 'name email')
     .sort({ date: -1, createdAt: -1 });
 

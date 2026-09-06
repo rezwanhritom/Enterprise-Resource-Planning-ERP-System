@@ -10,6 +10,7 @@ const PAGE_TITLES = {
   '/departments/create': 'Create Department',
   '/attendance': 'Attendance',
   '/attendance/manage': 'Manage Attendance',
+  '/leave': 'Leave Requests',
   '/payroll': 'Payroll Dashboard',
   '/payroll/generate': 'Generate Payroll',
   '/payroll/me': 'My Payroll',
@@ -18,11 +19,16 @@ const PAGE_TITLES = {
   '/procurement': 'Procurement Workflow',
   '/procurement/create': 'Create Procurement Request',
   '/performance': 'Performance Notes',
+  '/peer-reviews': 'Peer Reviews',
+  '/announcements': 'Announcements',
   '/suppliers': 'Suppliers',
   '/messages': 'Messages',
   '/audit': 'Audit Logs',
   '/finance': 'Finance Dashboard',
   '/finance/add': 'Add Finance Entry',
+  '/join-requests': 'Join Requests',
+  '/company-settings': 'Company Settings',
+  '/admin/users': 'Manage Users',
   '/profile': 'Profile',
   '/profile/edit': 'Edit Profile',
 };
@@ -55,7 +61,7 @@ export default function Navbar({ onOpenSidebar = () => {} }) {
 
   const handleLogout = () => {
     logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   };
 
   return (

@@ -6,6 +6,12 @@ const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{10,}$/;
 const SALT_ROUNDS = 10;
 
+export const ACCOUNT_STATUS = Object.freeze({
+  PENDING: 'pending',
+  ACTIVE: 'active',
+  REJECTED: 'rejected',
+});
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -29,6 +35,10 @@ const userSchema = new mongoose.Schema(
         message:
           'Password must be at least 10 characters and include uppercase, lowercase, number, and special character.',
       },
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
     },
     roles: {
       type: [String],
@@ -59,12 +69,27 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    baseSalary: {
+      type: Number,
+      min: [0, 'Base salary cannot be negative'],
+      default: 0,
+    },
     joiningDate: {
       type: Date,
+    },
+    accountStatus: {
+      type: String,
+      enum: Object.values(ACCOUNT_STATUS),
+      default: ACCOUNT_STATUS.ACTIVE,
     },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    refreshTokenHash: {
+      type: String,
+      select: false,
+      default: null,
     },
   },
   { timestamps: true }

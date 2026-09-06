@@ -2,10 +2,15 @@ import mongoose from 'mongoose';
 
 const departmentSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     name: {
       type: String,
       required: [true, 'Department name is required'],
-      unique: true,
       trim: true,
     },
     description: {
@@ -16,6 +21,8 @@ const departmentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+departmentSchema.index({ company: 1, name: 1 }, { unique: true });
 
 const Department = mongoose.model('Department', departmentSchema);
 

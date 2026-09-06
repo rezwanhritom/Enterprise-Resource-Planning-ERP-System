@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import User, { ACCOUNT_STATUS } from '../models/User.js';
 import { ROLES } from '../utils/roles.js';
+import { verifyAccessToken } from '../utils/jwt.js';
 
 export const protect = async (req, res, next) => {
   try {
@@ -14,17 +15,61 @@ export const protect = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let decoded;
 
-    const user = await User.findById(decoded.userId).select('-password');
+    try {
+      decoded = verifyAccessToken(token);
+    } catch (verifyError) {
+      // Support older tokens signed before access/refresh split.
+      if (verifyError.name === 'TokenExpiredError') {
+        return res.status(401).json({
+          success: false,
+          message: 'Token has expired',
+          code: 'TOKEN_EXPIRED',
+        });
+      }
+
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (legacyError) {
+        if (legacyError.name === 'TokenExpiredError') {
+          return res.status(401).json({
+            success: false,
+            message: 'Token has expired',
+            code: 'TOKEN_EXPIRED',
+          });
+        }
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid token',
+          code: 'TOKEN_INVALID',
+        });
+      }
+    }
+
+    const user = await User.findById(decoded.userId)
+      .select('-password')
+      .populate(
+        'company',
+        'name slug industry description website enabledFeatures isActive'
+      );
+
     if (!user) {
       return res.status(401).json({
         success: false,
         message: 'Invalid token user',
+        code: 'TOKEN_INVALID',
       });
     }
 
-    if (!user.isActive) {
+    if (user.accountStatus === ACCOUNT_STATUS.PENDING) {
+      return res.status(403).json({
+        success: false,
+        message: 'Account is pending admin approval',
+      });
+    }
+
+    if (user.accountStatus === ACCOUNT_STATUS.REJECTED || !user.isActive) {
       return res.status(403).json({
         success: false,
         message: 'Account is inactive',
@@ -32,18 +77,21 @@ export const protect = async (req, res, next) => {
     }
 
     req.user = user.toObject();
+    req.tokenPayload = decoded;
     return next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
         message: 'Token has expired',
+        code: 'TOKEN_EXPIRED',
       });
     }
 
     return res.status(401).json({
       success: false,
       message: 'Invalid token',
+      code: 'TOKEN_INVALID',
     });
   }
 };

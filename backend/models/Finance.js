@@ -7,6 +7,12 @@ export const FINANCE_TYPE = Object.freeze({
 
 const financeSchema = new mongoose.Schema(
   {
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: [true, 'Company is required'],
+      index: true,
+    },
     type: {
       type: String,
       enum: {
@@ -46,6 +52,8 @@ const financeSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+financeSchema.index({ company: 1, date: -1 });
 
 const Finance = mongoose.model('Finance', financeSchema);
 

@@ -16,6 +16,9 @@ import performanceRoutes from './routes/performanceRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import exportRoutes from './routes/exportRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
+import leaveRoutes from './routes/leaveRoutes.js';
+import peerReviewRoutes from './routes/peerReviewRoutes.js';
+import announcementRoutes from './routes/announcementRoutes.js';
 import globalErrorHandler from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -49,6 +52,9 @@ app.use('/api/performance', performanceRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/leave', leaveRoutes);
+app.use('/api/peer-reviews', peerReviewRoutes);
+app.use('/api/announcements', announcementRoutes);
 app.use('/api', routes);
 
 app.use((req, res) => {

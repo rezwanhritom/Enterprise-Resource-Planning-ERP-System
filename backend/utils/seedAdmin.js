@@ -1,6 +1,12 @@
+import Company from '../models/Company.js';
 import Department from '../models/Department.js';
-import User from '../models/User.js';
+import User, { ACCOUNT_STATUS } from '../models/User.js';
+import { ALLOWED_FEATURES } from './features.js';
 import { ROLES } from './roles.js';
+import {
+  ensureUniqueCompanySlug,
+  slugifyCompanyName,
+} from './companyHelpers.js';
 
 const ADMIN_DEPARTMENT = {
   name: 'Admin',
@@ -12,7 +18,14 @@ const DEFAULT_ADMIN = {
   email: 'rezwanhritom1537@gmail.com',
   password: 'RAHman@835346',
   roles: [ROLES.ADMIN],
+  accountStatus: ACCOUNT_STATUS.ACTIVE,
   isActive: true,
+};
+
+const DEFAULT_COMPANY = {
+  name: 'ERP Suite Demo',
+  industry: 'Technology',
+  description: 'Default company workspace for the seeded admin account.',
 };
 
 const seedAdmin = async () => {
@@ -26,17 +39,54 @@ const seedAdmin = async () => {
       console.log('Admin department already exists');
     }
 
+    let company = await Company.findOne({ name: DEFAULT_COMPANY.name });
+    if (!company) {
+      const slug = await ensureUniqueCompanySlug(
+        Company,
+        slugifyCompanyName(DEFAULT_COMPANY.name)
+      );
+      company = await Company.create({
+        ...DEFAULT_COMPANY,
+        slug,
+        enabledFeatures: [...ALLOWED_FEATURES],
+      });
+      console.log('Default company created');
+    } else {
+      console.log('Default company already exists');
+    }
+
     const existingAdmin = await User.findOne({ email: DEFAULT_ADMIN.email });
 
     if (existingAdmin) {
-      console.log('Super admin already exists');
+      let updated = false;
+      if (!existingAdmin.company) {
+        existingAdmin.company = company._id;
+        updated = true;
+      }
+      if (existingAdmin.accountStatus !== ACCOUNT_STATUS.ACTIVE) {
+        existingAdmin.accountStatus = ACCOUNT_STATUS.ACTIVE;
+        existingAdmin.isActive = true;
+        updated = true;
+      }
+      if (updated) {
+        await existingAdmin.save();
+        console.log('Super admin linked to default company');
+      } else {
+        console.log('Super admin already exists');
+      }
       return;
     }
 
-    await User.create({
+    const adminUser = await User.create({
       ...DEFAULT_ADMIN,
+      company: company._id,
       departments: [adminDepartment._id],
     });
+
+    if (!company.createdBy) {
+      company.createdBy = adminUser._id;
+      await company.save();
+    }
 
     console.log('Super admin created');
   } catch (error) {

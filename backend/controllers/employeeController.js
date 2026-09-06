@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User, { ACCOUNT_STATUS } from '../models/User.js';
 import mongoose from 'mongoose';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiError from '../utils/ApiError.js';
@@ -92,7 +92,12 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
 export const getAllEmployees = asyncHandler(async (req, res) => {
   const { search, department, role } = req.query || {};
+  const companyId = req.user?.company?._id || req.user?.company;
   const query = {};
+
+  if (companyId) {
+    query.company = companyId;
+  }
 
   if (typeof search === 'string' && search.trim()) {
     query.name = { $regex: search.trim(), $options: 'i' };
@@ -127,7 +132,13 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
 });
 
 export const getEmployeeDirectory = asyncHandler(async (req, res) => {
-  const employees = await User.find({ isActive: true })
+  const companyId = req.user?.company?._id || req.user?.company;
+  const query = { isActive: true, accountStatus: ACCOUNT_STATUS.ACTIVE };
+  if (companyId) {
+    query.company = companyId;
+  }
+
+  const employees = await User.find(query)
     .select('_id name email')
     .sort({ name: 1 });
 

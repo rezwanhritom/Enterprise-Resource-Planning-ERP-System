@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Card from '../../components/ui/Card.jsx';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
@@ -105,6 +105,12 @@ export default function LoginPage() {
             {isSubmitting ? 'Signing In...' : 'Sign In'}
           </Button>
         </form>
+        <p className="auth-back-link">
+          New here? <Link to="/register">Create an account</Link>
+        </p>
+        <p className="auth-back-link">
+          <Link to="/">Back to home</Link>
+        </p>
       </Card>
     </div>
   );
