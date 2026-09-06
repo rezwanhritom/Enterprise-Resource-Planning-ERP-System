@@ -13,12 +13,10 @@ try {
 
 import app from './app.js';
 import connectDB from './config/db.js';
-import seedAdmin from './utils/seedAdmin.js';
 import { initSocketServer } from './socket/index.js';
 
 const PORT = process.env.PORT || 5000;
 const DB_RETRY_MS = Number(process.env.DB_RETRY_MS || 15000);
-let hasSeededAdmin = false;
 
 const server = http.createServer(app);
 initSocketServer(server);
@@ -41,11 +39,6 @@ server.on('error', (error) => {
 const connectWithRetry = async () => {
   try {
     await connectDB();
-
-    if (!hasSeededAdmin) {
-      await seedAdmin();
-      hasSeededAdmin = true;
-    }
   } catch (err) {
     console.error(
       `Database unavailable. Retrying in ${DB_RETRY_MS / 1000}s...`,

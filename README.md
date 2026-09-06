@@ -33,11 +33,10 @@ This is not a single-login toy dashboard. It models real SaaS-style ERP behavior
 
 ```mermaid
 flowchart LR
-  Browser["React SPA<br/>Vite :3000"] -->|REST + JWT| API["Express API<br/>:5000 /api"]
+  Browser["React SPA"] -->|REST + JWT| API["Express API"]
   Browser -->|Socket.io| API
   API --> Models["Mongoose Models<br/>Company-scoped"]
   Models --> Mongo[(MongoDB)]
-  API --> Seed["seed:demo<br/>10 companies × 20 employees"]
 ```
 
 ### High-level modules
@@ -164,14 +163,9 @@ npm run dev:frontend
 - Backend: http://localhost:5000  
 - Health: http://localhost:5000/api/health  
 
-### Seed demo data (10 companies × ~20 employees each)
+### Demo accounts (already in MongoDB)
 
-```bash
-cd backend
-npm run seed:demo
-```
-
-**Shared demo password:** `Demo@12345!`
+**Shared password:** `Demo@12345!`
 
 | Company | Admin email |
 |---|---|
@@ -187,8 +181,6 @@ npm run seed:demo
 | Northwind Foods | `admin@northwind-foods.demo` |
 
 Employees: `emp1@{slug}.demo` … `emp20@{slug}.demo` (same password).
-
-Seed volume is intentionally moderate so a **512 MB Atlas free/shared cluster** stays comfortable.
 
 ---
 
@@ -255,7 +247,6 @@ Every core domain document carries a `company` ObjectId. Controllers filter with
 │   ├── routes/                # /api/* routers
 │   ├── middleware/            # auth, errors
 │   ├── socket/                # realtime messaging
-│   ├── scripts/seedDemoData.js
 │   └── utils/                 # JWT, roles, features, company scope
 ├── frontend/
 │   ├── src/pages/             # route screens
@@ -286,7 +277,7 @@ Every core domain document carries a `company` ObjectId. Controllers filter with
 - End-to-end product thinking (landing → onboarding → RBAC workspace)  
 - Multi-tenant data modeling, not just UI tabs  
 - JWT + Socket.io together  
-- Seedable demo dataset for walkthroughs  
+- Multi-company demo data already loaded in MongoDB  
 - Separated MVC backend and componentized React frontend  
 
 ---
