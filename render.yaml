@@ -1,12 +1,10 @@
-# Render Blueprint — optional two-service deploy
-# Docs: https://render.com/docs/blueprint-spec
-
+# Single Render Web Service (frontend + backend together)
 services:
   - type: web
-    name: erp-backend
+    name: erp-suite
     runtime: node
-    rootDir: backend
-    buildCommand: npm install
+    plan: free
+    buildCommand: npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -25,17 +23,3 @@ services:
         value: erp-suite
       - key: MONGO_DB
         value: erp
-
-  - type: web
-    name: erp-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_URL
-        sync: false
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html

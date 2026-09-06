@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import routes from './routes/index.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -20,6 +22,10 @@ import leaveRoutes from './routes/leaveRoutes.js';
 import peerReviewRoutes from './routes/peerReviewRoutes.js';
 import announcementRoutes from './routes/announcementRoutes.js';
 import globalErrorHandler from './middleware/errorMiddleware.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const frontendDist = path.resolve(__dirname, '../frontend/dist');
 
 const app = express();
 
@@ -56,6 +62,23 @@ app.use('/api/leave', leaveRoutes);
 app.use('/api/peer-reviews', peerReviewRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api', routes);
+
+// Production: serve Vite build from the same Render web service.
+app.use(express.static(frontendDist));
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  return res.sendFile(path.join(frontendDist, 'index.html'), (error) => {
+    if (error) {
+      return res.status(404).json({
+        success: false,
+        message: 'Frontend build not found. Run npm run build first.',
+      });
+    }
+    return undefined;
+  });
+});
 
 app.use((req, res) => {
   return res.status(404).json({

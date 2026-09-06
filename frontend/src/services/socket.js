@@ -1,7 +1,8 @@
 import { io } from 'socket.io-client';
 
 const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+  import.meta.env.VITE_SOCKET_URL ||
+  (import.meta.env.PROD ? undefined : 'http://localhost:5000');
 
 let socket = null;
 
@@ -17,6 +18,7 @@ export const getSocket = () => {
     return socket;
   }
 
+  // In production, undefined connects to the current host (Render URL).
   socket = io(SOCKET_URL, {
     autoConnect: true,
     auth: { token },

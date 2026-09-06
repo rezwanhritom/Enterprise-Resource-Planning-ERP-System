@@ -192,6 +192,32 @@ Seed volume is intentionally moderate so a **512 MB Atlas free/shared cluster** 
 
 ---
 
+## Deploy on Render (single Web Service)
+
+Use **Root Directory = `.`** (repo root).
+
+| Setting | Value |
+|---|---|
+| Build Command | `npm run build` |
+| Start Command | `npm start` |
+| Node | `20.x` (pinned in `package.json`) |
+
+`npm run build` now installs **backend + frontend** deps and builds the React app.  
+`npm start` runs Express, which also serves `frontend/dist`.
+
+Required env vars on Render:
+
+- `MONGO_URI`
+- `JWT_SECRET`
+- `JWT_REFRESH_SECRET`
+- `NODE_ENV=production`
+
+Do **not** set `VITE_API_URL` for this single-service setup (the app uses `/api` on the same host).
+
+Push these fixes, clear build cache, redeploy.
+
+---
+
 ## Authentication & security
 
 - Passwords hashed with **bcrypt** (strength rules enforced on the User model)  
